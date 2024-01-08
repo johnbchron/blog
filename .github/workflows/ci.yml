@@ -15,4 +15,4 @@ jobs:
       - uses: DeterminateSystems/flake-checker-action@main
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - name: Run `nix build`
-        run: nix build ".#container" && docker load < result && fly deploy --local-only -i blog
+        run: nix build ".#container" -L && docker load < result && flyctl deploy --local-only -i blog
