@@ -25,7 +25,7 @@ pub fn App() -> impl IntoView {
         outside_errors.insert_with_default_key(AppError::NotFound);
         view! { <ErrorTemplate outside_errors/> }.into_view()
       }>
-        <main class="mx-auto max-w-2xl pt-6 text-[#f5f5f5]">
+        <main class="mx-auto max-w-xl pt-4 text-[#f5f5f5]">
           <Routes>
             <Route path="" view=HomePage/>
           </Routes>
@@ -35,10 +35,37 @@ pub fn App() -> impl IntoView {
   }
 }
 
+/// A styled hyperlink.
+#[component]
+fn Link(
+  #[prop(into, default = String::new())] class: String,
+  #[prop(into)] href: String,
+  children: Children,
+) -> impl IntoView {
+  view! {
+    <a class=format!("hover:underline {class}") href=href>{children()}</a>
+  }
+}
+
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
   view! {
-    <p class="text-4xl font-semibold tracking-tight">"Welcome to Leptos!"</p>
+    <div class="flex flex-col gap-2">
+      <div class="flex w-full text-lg">
+        <Link class="items-center font-light" href="/">"John Lewis\' Blog"</Link>
+        <div class="flex-1" />
+        <p class="items-center font-light">"Rust, Games, Musings"</p>
+      </div>
+      <div class="h-[1px] w-full border-b border-[#f5f5f5]/50 mb-4" />
+      <div>
+        <p>"Hi! John here. I love building backend code and I\'m writing a technologically innovative magic-RPG game. Some other character traits of interest:"</p>
+        <ul class="list-disc pl-6">
+          <li>"I've been known to re-invent the wheel periodically"</li>
+          <li>"I'm a pathological "<Link href="https://www.rust-lang.org/">"Rust"</Link>" evangelist."</li>
+          <li>"I like walking; a lot."</li>
+        </ul>
+      </div>
+    </div>
   }
 }
