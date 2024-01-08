@@ -117,6 +117,7 @@
           src = inputs.cargo-leptos; 
 
           cargoSha256 = "sha256-XgKr1XLGHtCZbc4ZQJuko4dsJPl+hWmsIBex62tKEJ8=";
+          # cargoSha256 = "";
 
           nativeBuildInputs = [pkgs.pkg-config pkgs.openssl];
 
@@ -187,14 +188,18 @@
             paths = [ pkgs.cacert ./.  ];
           };
           config = {
-            Env = [ "PATH=${self.packages."x86_64-linux".blog}/bin" "APP_ENVIRONMENT=production" "LEPTOS_OUTPUT_NAME=blog" "LEPTOS_SITE_ADDR=0.0.0.0:3000" "LEPTOS_SITE_ROOT=${self.packages."x86_64-linux".blog}/bin/site" ];
+            Env = [ "PATH=${blog}/bin" "APP_ENVIRONMENT=production" "LEPTOS_OUTPUT_NAME=blog" "LEPTOS_SITE_ADDR=0.0.0.0:3000" "LEPTOS_SITE_ROOT=${blog}/bin/site" ];
 
             ExposedPorts = {
               "3000/tcp" = { };
             };
 
-            Cmd = [ "${self.packages."x86_64-linux".blog}/bin/blog" ];
+            Cmd = [ "${blog}/bin/blog" ];
           };
+        };
+
+        apps.flyDeploy = flake-utils.lib.mkApp {
+          drv = flyDeploy;
         };
 
         devShells.default = pkgs.mkShell {
@@ -211,6 +216,8 @@
             tailwindcss
             cargo-leptos
             dart-sass
+            flyctl
+            skopeo
           ];
           RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
         };
