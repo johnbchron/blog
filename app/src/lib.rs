@@ -1,3 +1,5 @@
+use std::io::Read;
+
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
@@ -17,7 +19,7 @@ pub fn App() -> impl IntoView {
 
       // sets the document title
       <Title text="Welcome to Leptos"/>
-      <Script src="https://cdn.tailwindcss.com"/>
+      <Script src="https://cdn.tailwindcss.com?plugins=forms,typography"/>
 
       // content for this welcome page
       <Router fallback=|| {
@@ -27,11 +29,46 @@ pub fn App() -> impl IntoView {
       }>
         <main class="mx-auto max-w-xl pt-4 text-[#f5f5f5]">
           <Routes>
-            <Route path="" view=HomePage/>
+            <StaticRoute path="" view=HomePage static_params=|| Box::pin(async { StaticParamsMap::default() }) />
           </Routes>
         </main>
       </Router>
     </div>
+  }
+}
+
+pub async fn get_markdown_content(
+  path: String,
+) -> Result<String, ServerFnError> {
+  let path = format!("./content/{path}");
+  let mut file = std::fs::File::open(&path)?;
+  let mut input = String::new();
+  file.read_to_string(&mut input)?;
+
+  let parser = pulldown_cmark::Parser::new(&input);
+  let mut html_output = String::new();
+  pulldown_cmark::html::push_html(&mut html_output, parser);
+
+  Ok(html_output)
+}
+
+#[component]
+fn Markdown(
+  #[prop(into)] path: String,
+  #[prop(into, default = String::new())] class: String,
+) -> impl IntoView {
+  let content = create_resource(
+    || (),
+    move |_| {
+      let path = path.clone();
+      async move { get_markdown_content(path).await }
+    },
+  );
+
+  view! {
+    <Suspense fallback=move || view! { <p>"Loading (Suspense Fallback)..."</p> }>
+      <div class=format!("prose prose-invert {class}")>{move || html::div().inner_html(content.get().map(|r| r.unwrap_or_default()).unwrap_or_default())}</div>
+    </Suspense>
   }
 }
 
@@ -58,14 +95,7 @@ fn HomePage() -> impl IntoView {
         <p class="items-center font-light">"Rust, Games, Musings"</p>
       </div>
       <div class="h-[1px] w-full border-b border-[#f5f5f5]/50 mb-4" />
-      <div>
-        <p>"Hi! John here. I love building backend code and I\'m writing a technologically innovative magic-RPG game. Some other character traits of interest:"</p>
-        <ul class="list-disc pl-6">
-          <li>"I've been known to re-invent the wheel periodically"</li>
-          <li>"I'm a pathological "<Link href="https://www.rust-lang.org/">"Rust"</Link>" evangelist."</li>
-          <li>"I like walking; a lot."</li>
-        </ul>
-      </div>
+      <Markdown path="homepage.md" />
     </div>
   }
 }

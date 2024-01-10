@@ -206,19 +206,15 @@
           inputsFrom = builtins.attrValues self.checks;
 
           # Extra inputs can be added here
-          nativeBuildInputs = with pkgs; [
+          nativeBuildInputs = commonArgs.buildInputs ++ (with pkgs; [
             toolchain
-            openssl
-            dive
-            wasm-pack
-            pkg-config
-            binaryen
+            dive # docker images
             tailwindcss
             cargo-leptos
-            dart-sass
             flyctl
-            skopeo
-          ];
+            skopeo # docker registries
+            bacon # cargo check w/ hot reload
+          ]);
           RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
         };
       });
