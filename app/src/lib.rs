@@ -19,7 +19,6 @@ pub fn App() -> impl IntoView {
 
       // sets the document title
       <Title text="Welcome to Leptos"/>
-      <Script src="https://cdn.tailwindcss.com?plugins=forms,typography"/>
 
       // content for this welcome page
       <Router fallback=|| {
