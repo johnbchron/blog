@@ -76,6 +76,7 @@
             pkgs.cargo-generate
             pkgs.binaryen
             pkgs.dart-sass
+            pkgs.tailwindcss
             pkgs.clang
           ] ++ lib.optionals pkgs.stdenv.isDarwin [
             # Additional darwin specific inputs can be set here
@@ -209,7 +210,6 @@
           nativeBuildInputs = commonArgs.buildInputs ++ (with pkgs; [
             toolchain
             dive # docker images
-            tailwindcss
             cargo-leptos
             flyctl
             skopeo # docker registries
