@@ -46,6 +46,7 @@
         # Only keeps markdown files
 				filterGenerator = pattern: path: _type: builtins.match pattern path != null;
 				cssFilter = filterGenerator ".*css$";
+        jsFilter = filterGenerator ".*js$";
 				ttfFilter = filterGenerator ".*ttf$";
 				woff2Filter = filterGenerator ".*woff2$";
 				webpFilter = filterGenerator ".*webp$";
@@ -53,7 +54,7 @@
 				pngFilter = filterGenerator ".*png$";
 				icoFilter = filterGenerator ".*ico$";
         protoOrCargo = path: type:
-          (craneLib.filterCargoSources path type) || (cssFilter path type) || (ttfFilter path type) || (woff2Filter path type) || (webpFilter path type) || (jpegFilter path type) || (pngFilter path type) || (icoFilter path type);
+          (craneLib.filterCargoSources path type) || (cssFilter path type) || (jsFilter path type) || (ttfFilter path type) || (woff2Filter path type) || (webpFilter path type) || (jpegFilter path type) || (pngFilter path type) || (icoFilter path type);
 
         # Include more types of files in our bundle
         src = lib.cleanSourceWith {
