@@ -14,8 +14,9 @@ pub fn App() -> impl IntoView {
   provide_meta_context();
 
   view! {
-    <div class="bg-[#252525] min-h-screen">
+    <div class="bg-neutral-800 min-h-screen">
       <Stylesheet id="leptos" href="/pkg/blog.css"/>
+      <Stylesheet href="/fonts/iosevka_term/iosevka_term.css"/>
 
       // sets the document title
       <Title text="Welcome to Leptos"/>
@@ -26,7 +27,7 @@ pub fn App() -> impl IntoView {
         outside_errors.insert_with_default_key(AppError::NotFound);
         view! { <ErrorTemplate outside_errors/> }.into_view()
       }>
-        <main class="mx-auto max-w-xl pt-4 text-[#f5f5f5]">
+        <main class="mx-auto max-w-xl pt-4 text-neutral-100 text-lg">
           <Routes>
             <StaticRoute path="" view=HomePage static_params=|| Box::pin(async { StaticParamsMap::default() }) />
           </Routes>
@@ -66,8 +67,9 @@ fn Markdown(
 
   view! {
     <Suspense fallback=move || view! { <p>"Loading (Suspense Fallback)..."</p> }>
-      <div class=format!("prose prose-invert {class}")>{move || html::div().inner_html(content.get().map(|r| r.unwrap_or_default()).unwrap_or_default())}</div>
+      <div class=format!("markdown {class}")>{move || html::div().inner_html(content.get().map(|r| r.unwrap_or_default()).unwrap_or_default())}</div>
     </Suspense>
+
   }
 }
 
@@ -87,13 +89,13 @@ fn Link(
 #[component]
 fn HomePage() -> impl IntoView {
   view! {
-    <div class="flex flex-col gap-2">
+    <div class="flex flex-col">
       <div class="flex w-full text-lg">
         <Link class="items-center font-light" href="/">"John Lewis\' Blog"</Link>
         <div class="flex-1" />
         <p class="items-center font-light">"Rust, Games, Musings"</p>
       </div>
-      <div class="h-[1px] w-full border-b border-[#f5f5f5]/50 mb-4" />
+      <div class="h-[1px] w-full border-b border-[#f5f5f5]/50 my-4" />
       <Markdown path="homepage.md" />
     </div>
   }

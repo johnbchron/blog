@@ -73,6 +73,9 @@ end2end-dir = "end2end"
 #  The browserlist query used for optimizing the CSS.
 browserquery = "defaults"
 
+# The file tailwind should parse as input
+tailwind-input-file = "style/main.scss"
+
 # Set by cargo-leptos watch when building with that tool. Controls whether autoreload JS will be included in the head
 watch = false
 

@@ -1,4 +1,123 @@
+@font-face {
+  font-family: 'FiraSans';
+  src: url("/fonts/Firava.woff2");
+}
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+.markdown {
+  @apply w-full text-base/snug text-neutral-300 break-words;
+}
+
+.markdown p {
+  @apply my-2;
+}
+
+.markdown h1 {
+  @apply text-5xl font-bold mb-3;
+}
+
+.markdown h1 code {
+  @apply text-5xl;
+}
+
+.markdown h2 {
+  @apply text-4xl font-bold mb-3 mt-4;
+}
+
+.markdown h2 code {
+  @apply text-4xl
+}
+
+.markdown h3 {
+  @apply text-2xl font-bold mb-2 mt-3;
+}
+
+.markdown h3 code {
+  @apply text-2xl;
+}
+
+.markdown h4 {
+  @apply font-bold;
+}
+
+.markdown pre {
+  font-family: 'FiraCode', monospace;
+  font-variant-ligatures: none;
+  padding: 10px;
+  padding-left: 15px;
+  font-size: 1.1rem;
+  border-radius: 10px;
+  word-wrap: break-word;
+  white-space: pre-wrap
+}
+
+.markdown a code,
+.markdown a:active code,
+.markdown a:visited code,
+.markdown a:link code {
+  font-family: 'FiraCode', monospace;
+  font-variant-ligatures: none;
+  color: #e4c151;
+  font-style: normal;
+  text-decoration: none
+}
+
+.markdown code {
+  @apply font-mono normal-nums text-neutral-400;
+  background-color: #2b2c2f;
+  border-radius: 10px;
+  padding-bottom: 3px;
+  padding-top: 3px;
+  padding-left: 8px;
+  padding-right: 8px;
+  text-decoration: none
+}
+
+.markdown blockquote {
+  @apply text-neutral-400 bg-neutral-700 rounded p-2;
+}
+
+.markdown blockquote p {
+  margin-top: 0px;
+  margin-bottom: 0px
+}
+
+.markdown ol,
+.markdown ul {
+  @apply pl-6 my-1;
+}
+
+.markdown ol {
+  @apply list-decimal;
+}
+
+.markdown ul {
+  @apply list-disc;
+}
+
+.markdown a:hover code {
+  background-color: #414247
+}
+
+.markdown a.button {
+  color: #ececec
+}
+
+.markdown a {
+  text-decoration: none;
+  color: #7c90ff
+}
+
+.markdown a:hover {
+  text-shadow: 0 0 0.9px #6c82ff, 0 0 0.9px #6c82ff
+}
+
+.markdown pre code {
+  padding-bottom: 0px;
+  padding-top: 0px;
+  padding-left: 0px;
+  padding-right: 0px
+}
