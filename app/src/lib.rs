@@ -1,6 +1,6 @@
 use std::io::Read;
 
-use leptos::*;
+use leptos::{server, *};
 use leptos_meta::*;
 use leptos_router::*;
 use pulldown_cmark::{CowStr, Event};
@@ -72,6 +72,7 @@ fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
   events_to_return
 }
 
+#[server]
 pub async fn get_markdown_content(
   path: String,
 ) -> Result<String, ServerFnError> {
