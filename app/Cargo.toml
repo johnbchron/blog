@@ -15,6 +15,7 @@ http.workspace = true
 cfg-if.workspace = true
 thiserror.workspace = true
 pulldown-cmark.workspace = true
+slug = "0.1.5"
 
 [features]
 default = []

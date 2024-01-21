@@ -3,6 +3,7 @@ use std::io::Read;
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
+use pulldown_cmark::{CowStr, Event};
 
 use crate::error_template::{AppError, ErrorTemplate};
 
@@ -37,6 +38,40 @@ pub fn App() -> impl IntoView {
   }
 }
 
+fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
+  let mut parsing_header = false;
+  let mut heading_id = String::new();
+  let mut events_to_return = Vec::new();
+
+  for event in events {
+    match event {
+      Event::Start(pulldown_cmark::Tag::Heading(_, _, _)) => {
+        parsing_header = true;
+        heading_id.clear();
+      }
+      Event::End(pulldown_cmark::Tag::Heading(_, _, _)) => {
+        parsing_header = false;
+        heading_id = slug::slugify(heading_id.as_str());
+
+        events_to_return.push(Event::Text(CowStr::from(" ")));
+        events_to_return.push(Event::Html(CowStr::from(format!(
+          "<a href=\"#{}\" id=\"{}\"><span class=\"anchor-icon\">#</span></a>",
+          heading_id, heading_id
+        ))));
+      }
+      Event::Text(ref text) => {
+        if parsing_header {
+          heading_id.push_str(text);
+        }
+      }
+      _ => {}
+    }
+    events_to_return.push(event);
+  }
+
+  events_to_return
+}
+
 pub async fn get_markdown_content(
   path: String,
 ) -> Result<String, ServerFnError> {
@@ -45,9 +80,11 @@ pub async fn get_markdown_content(
   let mut input = String::new();
   file.read_to_string(&mut input)?;
 
-  let parser = pulldown_cmark::Parser::new(&input);
+  let parser =
+    pulldown_cmark::Parser::new_ext(&input, pulldown_cmark::Options::all());
+  let events = add_markdown_heading_ids(parser.into_iter().collect());
   let mut html_output = String::new();
-  pulldown_cmark::html::push_html(&mut html_output, parser);
+  pulldown_cmark::html::push_html(&mut html_output, events.into_iter());
 
   Ok(html_output)
 }

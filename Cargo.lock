@@ -87,6 +87,7 @@ dependencies = [
  "leptos_meta",
  "leptos_router",
  "pulldown-cmark",
+ "slug",
  "thiserror",
 ]
 
@@ -570,6 +571,12 @@ dependencies = [
  "quote",
  "syn 2.0.48",
 ]
+
+[[package]]
+name = "deunicode"
+version = "1.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3ae2a35373c5c74340b79ae6780b498b2b183915ec5dacf263aac5a099bf485a"
 
 [[package]]
 name = "drain_filter_polyfill"
@@ -2090,6 +2097,16 @@ checksum = "dbff4acf519f630b3a3ddcfaea6c06b42174d9a44bc70c620e9ed1649d58b82a"
 dependencies = [
  "serde",
  "version_check",
+]
+
+[[package]]
+name = "slug"
+version = "0.1.5"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3bd94acec9c8da640005f8e135a39fc0372e74535e6b368b7a04b875f784c8c4"
+dependencies = [
+ "deunicode",
+ "wasm-bindgen",
 ]
 
 [[package]]
