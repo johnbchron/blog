@@ -69,11 +69,9 @@
           pname = "server";
 					version = "0.1.0";
 
-          buildInputs = [
+          nativeBuildInputs = [
             # Add additional build inputs here
             cargo-leptos
-            pkgs.pkg-config
-            pkgs.openssl
             pkgs.cargo-generate
             pkgs.binaryen
             pkgs.dart-sass
@@ -82,6 +80,11 @@
           ] ++ lib.optionals pkgs.stdenv.isDarwin [
             # Additional darwin specific inputs can be set here
             pkgs.libiconv
+          ];
+
+          buildInputs = [
+            pkgs.pkg-config
+            pkgs.openssl
           ];
         };
 
