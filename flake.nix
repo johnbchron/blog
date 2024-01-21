@@ -211,7 +211,7 @@
           inputsFrom = builtins.attrValues self.checks;
 
           # Extra inputs can be added here
-          nativeBuildInputs = commonArgs.buildInputs ++ (with pkgs; [
+          nativeBuildInputs = commonArgs.buildInputs ++ commonArgs.nativeBuildInputs ++ (with pkgs; [
             toolchain
             dive # docker images
             cargo-leptos
