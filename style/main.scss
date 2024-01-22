@@ -44,7 +44,7 @@
 }
 
 .markdown pre {
-  @apply bg-zinc-800 p-4 w-full rounded border border-zinc-600 text-xl/tight;
+  @apply bg-zinc-800 p-4 w-full rounded border border-zinc-600 text-xl/tight overflow-auto;
 }
 
 .markdown pre code {
