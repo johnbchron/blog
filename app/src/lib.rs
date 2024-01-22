@@ -17,7 +17,8 @@ pub fn App() -> impl IntoView {
   view! {
     <div class="bg-neutral-800 min-h-screen">
       <Stylesheet id="leptos" href="/pkg/blog.css"/>
-      <Stylesheet href="/fonts/iosevka_term/iosevka_term.css"/>
+      // <Stylesheet href="/fonts/iosevka_term/iosevka_term.css"/>
+      <Style>{include_str!("../../style/iosevka_term.css")}</Style>
 
       // sets the document title
       <Title text="Welcome to Leptos"/>
