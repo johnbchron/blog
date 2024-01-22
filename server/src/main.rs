@@ -2,7 +2,7 @@ use app::*;
 use axum::{routing::post, Router};
 use fileserv::file_and_error_handler;
 use leptos::*;
-use leptos_axum::{build_static_routes, generate_route_list, LeptosRoutes};
+use leptos_axum::{generate_route_list, LeptosRoutes};
 
 pub mod fileserv;
 
@@ -20,9 +20,7 @@ async fn main() {
   let conf = get_configuration(None).await.unwrap();
   let leptos_options = conf.leptos_options;
   let addr = leptos_options.site_addr;
-  let (routes, static_data_map) =
-    leptos_axum::generate_route_list_with_ssg(App);
-  build_static_routes(&leptos_options, App, &routes, static_data_map).await;
+  let routes = generate_route_list(App);
 
   // build our application with a route
   let app = Router::new()

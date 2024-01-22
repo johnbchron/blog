@@ -30,7 +30,7 @@ pub fn App() -> impl IntoView {
       }>
         <main class="px-4 md:px-0 md:mx-auto md:max-w-3xl pt-4 text-neutral-100 text-lg">
           <Routes>
-            <StaticRoute path="" view=HomePage static_params=|| Box::pin(async { StaticParamsMap::default() }) />
+            <Route path="" view=HomePage />
           </Routes>
         </main>
       </Router>
