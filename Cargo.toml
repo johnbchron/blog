@@ -3,16 +3,17 @@ resolver = "2"
 members = ["app", "frontend", "server"]
 
 # need to be applied only to wasm build
-[profile.release]
-codegen-units = 1
-lto = true
+[profile.wasm-release]
+inherits = "release"
 opt-level = 'z'
+lto = true
+codegen-units = 1
 
 [workspace.dependencies]
-leptos = { version = "0.5", features = ["nightly"] }
+leptos = { version = "0.5", features = ["nightly", "experimental-islands"] }
 leptos_meta = { version = "0.5", features = ["nightly"] }
 leptos_router = { version = "0.5", features = ["nightly"] }
-leptos_axum = { version = "0.5" }
+leptos_axum = { version = "0.5", features = ["experimental-islands"] }
 
 axum = "0.6.20"
 cfg-if = "1"
@@ -102,3 +103,5 @@ lib-features = []
 #
 # Optional. Defaults to false.
 lib-default-features = false
+
+lib-profile-release = "wasm-release"

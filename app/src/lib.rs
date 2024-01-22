@@ -72,14 +72,13 @@ fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
   events_to_return
 }
 
-#[server]
-pub async fn get_markdown_content(
-  path: String,
-) -> Result<String, ServerFnError> {
+fn get_markdown_content(path: String) -> String {
   let path = format!("./content/{path}");
-  let mut file = std::fs::File::open(&path)?;
+  let mut file = std::fs::File::open(&path).expect("failed to open file");
   let mut input = String::new();
-  file.read_to_string(&mut input)?;
+  file
+    .read_to_string(&mut input)
+    .expect("failed to read file");
 
   let parser =
     pulldown_cmark::Parser::new_ext(&input, pulldown_cmark::Options::all());
@@ -87,7 +86,7 @@ pub async fn get_markdown_content(
   let mut html_output = String::new();
   pulldown_cmark::html::push_html(&mut html_output, events.into_iter());
 
-  Ok(html_output)
+  html_output
 }
 
 #[component]
@@ -95,19 +94,9 @@ fn Markdown(
   #[prop(into)] path: String,
   #[prop(into, default = String::new())] class: String,
 ) -> impl IntoView {
-  let content = create_resource(
-    || (),
-    move |_| {
-      let path = path.clone();
-      async move { get_markdown_content(path).await }
-    },
-  );
-
+  let content = get_markdown_content(path);
   view! {
-    <Suspense fallback=move || view! { <p>"Loading (Suspense Fallback)..."</p> }>
-      <div class=format!("markdown {class}")>{move || html::div().inner_html(content.get().map(|r| r.unwrap_or_default()).unwrap_or_default())}</div>
-    </Suspense>
-
+    <div class=format!("markdown {class}")>{html::div().inner_html(content)}</div>
   }
 }
 
