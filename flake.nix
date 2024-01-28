@@ -218,6 +218,7 @@
             flyctl
             skopeo # docker registries
             bacon # cargo check w/ hot reload
+            marksman # markdown lsp
           ]);
           RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
         };

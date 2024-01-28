@@ -12,11 +12,11 @@
 }
 
 .markdown p {
-  @apply my-2;
+  @apply my-4;
 }
 
 .markdown h1 {
-  @apply text-5xl font-bold mb-3;
+  @apply text-5xl font-bold mb-6;
 }
 
 .markdown h1 code {
@@ -24,7 +24,7 @@
 }
 
 .markdown h2 {
-  @apply text-4xl font-bold mb-2 mt-6;
+  @apply text-4xl font-bold mb-4 mt-8;
 }
 
 .markdown h2 code {
@@ -32,7 +32,7 @@
 }
 
 .markdown h3 {
-  @apply text-3xl font-bold mb-2 mt-4;
+  @apply text-3xl font-bold mb-4 mt-6;
 }
 
 .markdown h3 code {
@@ -44,21 +44,20 @@
 }
 
 .markdown pre {
-  @apply bg-zinc-800 p-4 w-full rounded border border-zinc-600 text-xl/tight overflow-auto;
+  @apply my-2 bg-zinc-800 p-4 w-full rounded border border-zinc-600 text-xl/5 overflow-auto;
 }
 
 .markdown pre code {
-  @apply bg-inherit p-0 border-0;
+  @apply text-base/3 bg-inherit p-0 m-0 border-0 whitespace-pre-wrap;
 }
 
 .markdown code {
-  @apply text-base font-mono normal-nums bg-zinc-800 rounded border border-zinc-600 px-1.5 py-0.5 mx-0.5;
+  @apply text-lg font-mono normal-nums bg-zinc-800 rounded border border-zinc-600 px-1.5 py-0.5 mx-0.5 whitespace-nowrap;
 }
 
 .markdown blockquote {
   @apply bg-zinc-700 my-3 p-2 pl-4 border-zinc-400 border-l-4;
 }
-
 
 .markdown ol,
 .markdown ul {

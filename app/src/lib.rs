@@ -124,7 +124,7 @@ fn HomePage() -> impl IntoView {
         <p class="items-center font-light">"Rust, Games, Musings"</p>
       </div>
       <div class="h-[1px] w-full border-b border-[#f5f5f5]/50 my-4" />
-      <Markdown path="homepage.md" />
+      <Markdown path="posts/building-this-blog.md" />
     </div>
   }
 }
