@@ -1,5 +1,6 @@
 use std::io::Read;
 
+use gray_matter::{engine::TOML, Matter};
 use leptos::{server, *};
 use leptos_meta::*;
 use leptos_router::*;
@@ -81,8 +82,12 @@ fn get_markdown_content(path: String) -> String {
     .read_to_string(&mut input)
     .expect("failed to read file");
 
-  let parser =
-    pulldown_cmark::Parser::new_ext(&input, pulldown_cmark::Options::all());
+  let matter = Matter::<TOML>::new().parse(&input);
+
+  let parser = pulldown_cmark::Parser::new_ext(
+    &matter.content,
+    pulldown_cmark::Options::all(),
+  );
   let events = add_markdown_heading_ids(parser.into_iter().collect());
   let mut html_output = String::new();
   pulldown_cmark::html::push_html(&mut html_output, events.into_iter());

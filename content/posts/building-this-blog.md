@@ -1,5 +1,5 @@
 ---
-title: "Building this blog: A Space Odyssey"
+title = "Building this blog: A Space Odyssey"
 ---
 
 # Building this blog: A Space Odyssey

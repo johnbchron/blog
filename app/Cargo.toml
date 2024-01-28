@@ -17,6 +17,7 @@ thiserror.workspace = true
 pulldown-cmark.workspace = true
 serde.workspace = true
 slug = "0.1.5"
+gray_matter = "0.2.6"
 
 [features]
 default = []
