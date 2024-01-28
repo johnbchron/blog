@@ -1,5 +1,7 @@
 ---
 title = "Building this blog: A Space Odyssey"
+written_on = "28/01/24"
+posted = true
 ---
 
 # Building this blog: A Space Odyssey
@@ -214,3 +216,9 @@ This blog works, but there are some more features that I'd like to have.
 The first is syntax highlighting. I refuse to just throw a JS snippet in there to load highlighting styles after the page load, mainly just because I've made it this far on pure Rust. The `syntect` library seems to be the best choice, and I'll implement it the same way by iterating through the markdown `Event`s, I just haven't done it yet.
 
 The other is using a proc-macro to manage posts. I'd love to have a proc macro just scan a list of post files at compile time and automagically build the route list and post list for wherever in the project I need them, and it seems that this would be a nice introductory project for proc macros. I've build declarative `#[derive()]` macros and simple `macro_rules!()` proc macros for syntax sugar, but nothing that uses the file system at compile time.
+
+### Conclusion
+
+Thanks for sticking with me this far. Really, thank you. I hope you enjoyed this post or at least learned something. This was my first blog post ever, so it's special to me.
+
+If you have any comments or questions, please feel free to [email me](mailto:blog@jlewis.sh); I'd love to hear your feedback. Cheers!
