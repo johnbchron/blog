@@ -1,7 +1,7 @@
 use std::io::Read;
 
 use gray_matter::{engine::TOML, Matter};
-use leptos::{server, *};
+use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
 use pulldown_cmark::{CowStr, Event};
@@ -17,8 +17,7 @@ pub fn App() -> impl IntoView {
 
   view! {
     <div class="bg-neutral-800 min-h-screen">
-      <Stylesheet id="leptos" href="/pkg/blog.css"/>
-      // <Stylesheet href="/fonts/iosevka_term/iosevka_term.css"/>
+      <Stylesheet href="/pkg/blog.css"/>
       <Style>{include_str!("../../style/iosevka_term.css")}</Style>
 
       // sets the document title
@@ -30,20 +29,19 @@ pub fn App() -> impl IntoView {
         outside_errors.insert_with_default_key(AppError::NotFound);
         view! { <ErrorTemplate outside_errors/> }.into_view()
       }>
-        <div class="flex flex-col">
-          <main class="px-4 md:px-0 md:mx-auto md:w-[48rem] pt-4 text-neutral-100 text-lg">
-            <div class="flex gap-2 w-full text-lg font-light">
-              <Link href="/">"John Lewis\' Blog"</Link>
-              <p>|</p>
-              <Link href="/posts">Posts</Link>
-              <div class="flex-1" />
-              <p class="items-center font-light">"Rust, Games, Musings"</p>
-            </div>
-            <div class="h-[1px] w-full border-b border-neutral-100/50 my-4" />
-            <Routes>
-              <Route path="" view=HomePage />
-            </Routes>
-          </main>
+        <div class="px-4 md:px-0 md:mx-auto md:w-[48rem] pt-4 text-neutral-100 text-lg">
+          // header
+          <div class="flex gap-2 w-full text-lg font-light">
+            <Link href="/">"John Lewis\' Blog"</Link>
+            <p>|</p>
+            <Link href="/posts">Posts</Link>
+            <div class="flex-1" />
+            <p class="items-center font-light">"Rust, Games, Musings"</p>
+          </div>
+          <Separator />
+          <Routes>
+            <Route path="" view=HomePage />
+          </Routes>
         </div>
       </Router>
     </div>
@@ -126,6 +124,12 @@ fn Link(
   view! {
     <a class=format!("text-periwinkle hover:underline {class}") href=href>{children()}</a>
   }
+}
+
+/// A full-width separator.
+#[component]
+fn Separator() -> impl IntoView {
+  view! { <div class="h-[1px] w-full border-b border-neutral-100/50 my-4" /> }
 }
 
 /// Renders the home page of your application.
