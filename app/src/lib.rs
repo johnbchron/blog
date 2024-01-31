@@ -31,7 +31,7 @@ pub fn App() -> impl IntoView {
         view! { <ErrorTemplate outside_errors/> }.into_view()
       }>
         <div class="flex flex-col">
-          <main class="px-4 md:px-0 md:mx-auto md:max-w-3xl pt-4 text-neutral-100 text-lg">
+          <main class="px-4 md:px-0 md:mx-auto md:w-[48rem] pt-4 text-neutral-100 text-lg">
             <div class="flex gap-2 w-full text-lg font-light">
               <Link href="/">"John Lewis\' Blog"</Link>
               <p>|</p>
@@ -40,9 +40,9 @@ pub fn App() -> impl IntoView {
               <p class="items-center font-light">"Rust, Games, Musings"</p>
             </div>
             <div class="h-[1px] w-full border-b border-neutral-100/50 my-4" />
-              <Routes>
-                <Route path="" view=HomePage />
-              </Routes>
+            <Routes>
+              <Route path="" view=HomePage />
+            </Routes>
           </main>
         </div>
       </Router>
