@@ -77,10 +77,5 @@
 }
 
 .markdown a {
-  text-decoration: none;
-  color: #7c90ff
-}
-
-.markdown a:hover {
-  text-shadow: 0 0 0.9px #6c82ff, 0 0 0.9px #6c82ff
+  @apply text-periwinkle hover:underline;
 }

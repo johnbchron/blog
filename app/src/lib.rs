@@ -30,11 +30,21 @@ pub fn App() -> impl IntoView {
         outside_errors.insert_with_default_key(AppError::NotFound);
         view! { <ErrorTemplate outside_errors/> }.into_view()
       }>
-        <main class="px-4 md:px-0 md:mx-auto md:max-w-3xl pt-4 text-neutral-100 text-lg">
-          <Routes>
-            <Route path="" view=HomePage />
-          </Routes>
-        </main>
+        <div class="flex flex-col">
+          <main class="px-4 md:px-0 md:mx-auto md:max-w-3xl pt-4 text-neutral-100 text-lg">
+            <div class="flex gap-2 w-full text-lg font-light">
+              <Link href="/">"John Lewis\' Blog"</Link>
+              <p>|</p>
+              <Link href="/posts">Posts</Link>
+              <div class="flex-1" />
+              <p class="items-center font-light">"Rust, Games, Musings"</p>
+            </div>
+            <div class="h-[1px] w-full border-b border-neutral-100/50 my-4" />
+              <Routes>
+                <Route path="" view=HomePage />
+              </Routes>
+          </main>
+        </div>
       </Router>
     </div>
   }
@@ -114,7 +124,7 @@ fn Link(
   children: Children,
 ) -> impl IntoView {
   view! {
-    <a class=format!("hover:underline {class}") href=href>{children()}</a>
+    <a class=format!("text-periwinkle hover:underline {class}") href=href>{children()}</a>
   }
 }
 
@@ -122,14 +132,6 @@ fn Link(
 #[component]
 fn HomePage() -> impl IntoView {
   view! {
-    <div class="flex flex-col">
-      <div class="flex w-full text-lg">
-        <Link class="items-center font-light" href="/">"John Lewis\' Blog"</Link>
-        <div class="flex-1" />
-        <p class="items-center font-light">"Rust, Games, Musings"</p>
-      </div>
-      <div class="h-[1px] w-full border-b border-[#f5f5f5]/50 my-4" />
       <Markdown path="posts/building-this-blog.md" />
-    </div>
   }
 }
