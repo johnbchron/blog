@@ -1,7 +1,7 @@
 ---
 title = "Building this blog: A Space Odyssey"
 written_on = "28/01/24"
-posted = true
+public = true
 ---
 
 # Building this blog: A Space Odyssey
