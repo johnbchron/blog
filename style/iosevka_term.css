@@ -1,8 +1,7 @@
 @font-face {
 	font-family: 'Iosevka Term Web';
 	font-display: swap;
-	font-weight: 400;
-	font-stretch: normal;
+	font-weight: 100 900;
 	font-style: normal;
 	src: url('/fonts/IosevkaTerm-Regular.woff2') format('woff2');
 }
