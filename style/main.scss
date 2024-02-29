@@ -44,15 +44,11 @@
 }
 
 .markdown pre {
-  @apply my-2 bg-zinc-800 p-4 w-full rounded border border-zinc-600 text-xl/5 overflow-auto;
-}
-
-.markdown pre code {
-  @apply text-base/3 bg-inherit p-0 m-0 border-0 whitespace-pre-wrap;
+  @apply my-2 bg-zinc-800 p-4 w-full rounded border border-zinc-600 text-base leading-tight whitespace-pre-wrap;
 }
 
 .markdown code {
-  @apply text-lg font-mono normal-nums bg-zinc-800 rounded border border-zinc-600 px-1.5 py-0.5 mx-0.5 whitespace-nowrap;
+  @apply text-lg font-mono font-semibold normal-nums bg-zinc-800 rounded border border-zinc-600 px-1.5 py-0.5 mx-0.5 whitespace-nowrap;
 }
 
 .markdown blockquote {

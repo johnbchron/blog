@@ -9,7 +9,7 @@ pub mod fileserv;
 
 #[tokio::main]
 async fn main() {
-  simple_logger::init_with_level(log::Level::Debug)
+  simple_logger::init_with_level(log::Level::Info)
     .expect("couldn't initialize logging");
 
   // Setting get_configuration(None) means we'll be using cargo-leptos's env

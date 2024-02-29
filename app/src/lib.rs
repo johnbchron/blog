@@ -33,7 +33,7 @@ pub fn App() -> impl IntoView {
           // header
           <div class="flex gap-2 w-full text-lg font-light">
             <Link href="/">"John Lewis\' Blog"</Link>
-            <p>|</p>
+            "|"
             <Link href="/posts">Posts</Link>
             <div class="flex-1" />
             <p class="items-center font-light">"Rust, Games, Musings"</p>
@@ -82,6 +82,69 @@ fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
   events_to_return
 }
 
+// fn highlight_code(code: &str, lang: &str) -> String {
+//   use syntect::{
+//     easy::HighlightLines,
+//     highlighting::{Style, ThemeSet},
+//     parsing::SyntaxSet,
+//     util::{as_24_bit_terminal_escaped, LinesWithEndings},
+//   };
+
+//   let ps = SyntaxSet::load_defaults_newlines();
+//   let ts = ThemeSet::load_defaults();
+
+//   println!("lang: {}", lang);
+//   let syntax = ps
+//     .find_syntax_by_extension(lang.split('.').last().unwrap_or("txt"))
+//     .unwrap();
+
+//   let output = syntect::html::highlighted_html_for_string(
+//     code,
+//     &ps,
+//     &syntax,
+//     &ts.themes["base16-ocean.dark"],
+//   );
+
+//   output.unwrap()
+// }
+
+// fn add_hightlighting(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
+//   let mut parsing_code_block = false;
+//   let mut code_block_language = String::new();
+//   let mut code_block_content = String::new();
+//   let mut events_to_return = Vec::new();
+
+//   for event in events {
+//     match event {
+//       Event::Start(pulldown_cmark::Tag::CodeBlock(
+//         pulldown_cmark::CodeBlockKind::Fenced(ref lang),
+//       )) => {
+//         parsing_code_block = true;
+//         code_block_language = lang.to_string();
+//         code_block_content.clear();
+//       }
+//       Event::End(pulldown_cmark::Tag::CodeBlock(
+//         pulldown_cmark::CodeBlockKind::Fenced(_),
+//       )) => {
+//         parsing_code_block = false;
+//         let highlighted_code =
+//           highlight_code(&code_block_content, &code_block_language);
+//         events_to_return.push(Event::Html(CowStr::from(highlighted_code)));
+//       }
+//       Event::Text(ref text) => {
+//         if parsing_code_block {
+//           code_block_content.push_str(text);
+//           continue;
+//         }
+//       }
+//       _ => {}
+//     };
+//     events_to_return.push(event);
+//   }
+
+//   events_to_return
+// }
+
 fn get_markdown_content(path: String) -> String {
   let path = format!("./content/{path}");
   let mut file = std::fs::File::open(&path).expect("failed to open file");
@@ -97,6 +160,12 @@ fn get_markdown_content(path: String) -> String {
     pulldown_cmark::Options::all(),
   );
   let events = add_markdown_heading_ids(parser.into_iter().collect());
+  // let events = add_hightlighting(events);
+  let events = highlight_pulldown::highlight_with_theme(
+    events.into_iter(),
+    "base16-ocean.dark",
+  )
+  .unwrap();
   let mut html_output = String::new();
   pulldown_cmark::html::push_html(&mut html_output, events.into_iter());
 

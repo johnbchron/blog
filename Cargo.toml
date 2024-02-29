@@ -81,6 +81,8 @@ tailwind-input-file = "style/main.scss"
 # Set by cargo-leptos watch when building with that tool. Controls whether autoreload JS will be included in the head
 watch = false
 
+watch-additional-files = [ "content/*" ]
+
 # The environment Leptos will run in, usually either "DEV" or "PROD"
 env = "DEV"
 

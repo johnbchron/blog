@@ -24,7 +24,7 @@ Some other choices I made were to use [TailwindCSS](https://tailwindcss.com/) fo
 I used the Leptos [`start-axum-workspace`](https://github.com/leptos-rs/start-axum-workspace) to seed the repo because the last time I used Leptos, the repository seemed very cluttered with too many `#[cfg(...)]` directives and feature flags, and it looked like it would benefit from being separated into multiple crates. I was correct.
 
 The first thing I noticed was that the dependencies were being specified in an odd way. They were being declared in the workspace `Cargo.toml` file and then subscribed to in the individual crate `Cargo.toml` files:
-```root/Cargo.toml
+```toml
 [workspace.dependencies]
 leptos = { version = "0.5", features = ["nightly"] }
 leptos_meta = { version = "0.5", features = ["nightly"] }
@@ -32,7 +32,7 @@ leptos_router = { version = "0.5", features = ["nightly"] }
 leptos_axum = { version = "0.5" }
 ```
 
-```root/app/Cargo.toml
+```toml
 [dependencies]
 leptos.workspace = true
 leptos_meta.workspace = true
@@ -193,6 +193,8 @@ This is where Tailwind's `@apply` comes in. We can refactor the above code to:
 ```
 I breathe a sigh of relief, but the moment is brief.
 
+> This is a blockquote
+
 ### Deployment & CI/CD
 
 #### The Problem
@@ -213,7 +215,7 @@ If you'd like to look through my `flake.toml` you can find it [here](https://git
 
 This blog works, but there are some more features that I'd like to have.
 
-The first is syntax highlighting. I refuse to just throw a JS snippet in there to load highlighting styles after the page load, mainly just because I've made it this far on pure Rust. The `syntect` library seems to be the best choice, and I'll implement it the same way by iterating through the markdown `Event`s, I just haven't done it yet.
+The first is syntax highlighting. I refuse to just throw a JS snippet in there to load highlighting styles after the page load, mainly just because I've made it this far on pure Rust. The `syntect` library seems to be the best choice, and I'll implement it the same way by iterating through the markdown `Event`s, I just haven't done it yet. Maybe by the time you read this post you'll be wondering what I'm talking about because this post already has syntax highlighting. ¯\\\_(ツ)\_/¯
 
 The other is using a proc-macro to manage posts. I'd love to have a proc macro just scan a list of post files at compile time and automagically build the route list and post list for wherever in the project I need them, and it seems that this would be a nice introductory project for proc macros. I've build declarative `#[derive()]` macros and simple `macro_rules!()` proc macros for syntax sugar, but nothing that uses the file system at compile time.
 
