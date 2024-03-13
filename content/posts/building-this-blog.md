@@ -193,8 +193,6 @@ This is where Tailwind's `@apply` comes in. We can refactor the above code to:
 ```
 I breathe a sigh of relief, but the moment is brief.
 
-> This is a blockquote
-
 ### Deployment & CI/CD
 
 #### The Problem
