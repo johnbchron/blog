@@ -30,6 +30,12 @@ tower-http = { version = "0.5", features = ["full"] }
 wasm-bindgen = "=0.2.92"
 pulldown-cmark = "0.9"
 
+[patch.crates-io]
+leptos = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
+leptos_axum = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
+leptos_meta = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
+leptos_router = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
+
 # See https://github.com/akesson/cargo-leptos for documentation of all the parameters.
 
 # A leptos project defines which workspace members

@@ -1,8 +1,6 @@
 #[cfg(feature = "ssr")]
 mod markdown;
 
-use std::io::Read;
-
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
@@ -20,6 +18,11 @@ pub fn App() -> impl IntoView {
     <div class="bg-neutral-800 min-h-screen">
       <Stylesheet href="/pkg/blog.css"/>
       <Style>{include_str!("../../style/iosevka_term.css")}</Style>
+      <leptos_meta::Link
+        rel="preload" href="fonts/Firava.woff2"
+        as_="font" type_="font/woff2" crossorigin="anonymous"
+      />
+      <leptos_meta::Link rel="preload" href="fonts/IosevkaTerm-Regular.woff2" as_="font" type_="font/woff2" crossorigin="anonymous" />
 
       // sets the document title
       <Title text="Welcome to Leptos"/>
@@ -66,8 +69,8 @@ fn Markdown(
   view! {
     <Suspense>
       { move || content.get().map(|c| match c {
-        Ok(ref content) => view!{
-          <div class=format!("markdown {class}")>{html::div().inner_html(c.unwrap())}</div>
+        Ok(content) => view!{
+          <div class=format!("markdown {class}")>{html::div().inner_html(content)}</div>
         }.into_view(),
         _ => {
           view! { <div>"Error loading content"</div> }.into_view()

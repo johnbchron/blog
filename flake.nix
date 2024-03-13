@@ -125,15 +125,15 @@
           config = {
             Cmd = [ "blog" ];
             WorkingDir = "${blog}/bin";
-            Env = {
-              LEPTOS_OUTPUT_NAME = "blog";
-              LEPTOS_SITE_ROOT = "blog";
-              LEPTOS_SITE_PKG_DIR = "pkg";
-              LEPTOS_SITE_ADDR = "0.0.0.0:3000";
-              LEPTOS_RELOAD_PORT = "3001";
-              LEPTOS_ENV = "PROD";
-              LEPTOS_HASH_FILES = true;
-            };
+            Env = [
+              "LEPTOS_OUTPUT_NAME=blog"
+              "LEPTOS_SITE_ROOT=blog"
+              "LEPTOS_SITE_PKG_DIR=pkg"
+              "LEPTOS_SITE_ADDR=0.0.0.0:3000"
+              "LEPTOS_RELOAD_PORT=3001"
+              "LEPTOS_ENV=PROD"
+              "LEPTOS_HASH_FILES=true"
+            ];
           };
         };
 
