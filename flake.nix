@@ -33,8 +33,9 @@
 				jpegFilter = filterGenerator ".*jpeg$";
 				pngFilter = filterGenerator ".*png$";
 				icoFilter = filterGenerator ".*ico$";
+        mdFilter = filterGenerator ".*md$";
         protoOrCargo = path: type:
-          (craneLib.filterCargoSources path type) || (cssFilter path type) || (jsFilter path type) || (ttfFilter path type) || (woff2Filter path type) || (webpFilter path type) || (jpegFilter path type) || (pngFilter path type) || (icoFilter path type);
+          (craneLib.filterCargoSources path type) || (cssFilter path type) || (jsFilter path type) || (ttfFilter path type) || (woff2Filter path type) || (webpFilter path type) || (jpegFilter path type) || (pngFilter path type) || (icoFilter path type) || (mdFilter path type);
 
         # Include more types of files in our bundle
         src = lib.cleanSourceWith {
@@ -92,6 +93,7 @@
             mkdir -p $out/bin
             cp target/release/server $out/bin/blog
             cp -r target/site $out/bin/
+            cp target/release/hash.txt $out/bin/
             cp -r content $out/bin/
           '';
           # Prevent cargo test and nextest from duplicating tests
@@ -128,7 +130,7 @@
             WorkingDir = "${blog}/bin";
             Env = [
               "LEPTOS_OUTPUT_NAME=blog"
-              "LEPTOS_SITE_ROOT=blog"
+              "LEPTOS_SITE_ROOT=site"
               "LEPTOS_SITE_PKG_DIR=pkg"
               "LEPTOS_SITE_ADDR=0.0.0.0:3000"
               "LEPTOS_RELOAD_PORT=3001"
