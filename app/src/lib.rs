@@ -1,5 +1,6 @@
 #[cfg(feature = "ssr")]
 mod markdown;
+mod posts;
 
 use leptos::*;
 use leptos_meta::*;
@@ -19,10 +20,10 @@ pub fn App() -> impl IntoView {
       <Stylesheet href="/pkg/blog.css"/>
       <Style>{include_str!("../../style/iosevka_term.css")}</Style>
       <leptos_meta::Link
-        rel="preload" href="fonts/Firava.woff2"
+        rel="preload" href="/fonts/Firava.woff2"
         as_="font" type_="font/woff2" crossorigin="anonymous"
       />
-      <leptos_meta::Link rel="preload" href="fonts/IosevkaTerm-Regular.woff2" as_="font" type_="font/woff2" crossorigin="anonymous" />
+      <leptos_meta::Link rel="preload" href="/fonts/IosevkaTerm-Regular.woff2" as_="font" type_="font/woff2" crossorigin="anonymous" />
 
       // sets the document title
       <Title text="Welcome to Leptos"/>
@@ -45,6 +46,7 @@ pub fn App() -> impl IntoView {
           <Separator />
           <Routes>
             <Route path="" view=HomePage />
+            <Route path="post/:path" view=posts::PostPage />
           </Routes>
         </div>
       </Router>
@@ -52,39 +54,11 @@ pub fn App() -> impl IntoView {
   }
 }
 
-#[server]
-async fn get_markdown_content(path: String) -> Result<String, ServerFnError> {
-  #[cfg(feature = "ssr")]
-  Ok(markdown::get_markdown_content(path))
-}
-
-#[component]
-fn Markdown(
-  #[prop(into)] path: String,
-  #[prop(default = "")] class: &'static str,
-) -> impl IntoView {
-  let content =
-    create_blocking_resource(move || path.clone(), get_markdown_content);
-
-  view! {
-    <Suspense>
-      { move || content.get().map(|c| match c {
-        Ok(content) => view!{
-          <div class=format!("markdown {class}")>{html::div().inner_html(content)}</div>
-        }.into_view(),
-        _ => {
-          view! { <div>"Error loading content"</div> }.into_view()
-        }
-      })}
-    </Suspense>
-  }
-}
-
 /// A styled hyperlink.
 #[component]
 fn Link(
   #[prop(into, default = String::new())] class: String,
-  #[prop(into)] href: String,
+  href: &'static str,
   children: Children,
 ) -> impl IntoView {
   view! {
@@ -101,7 +75,19 @@ fn Separator() -> impl IntoView {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
+  let posts_resource =
+    create_blocking_resource(|| (), |_| posts::get_all_posts());
+
   view! {
-    <Markdown path="posts/building-this-blog.md" />
+    <Suspense>
+      { move || posts_resource.get().map(|p| match p {
+        Ok(posts) => view! {
+          <div class="flex flex-col gap-4">
+            { posts.iter().map(|p| view! { <p>{p.metadata.title.clone()}</p> }).collect_view() }
+          </div>
+        }.into_view(),
+        _ => view! { <p>"Loading..."</p> }.into_view()
+      })}
+    </Suspense>
   }
 }

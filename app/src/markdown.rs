@@ -1,6 +1,3 @@
-use std::io::Read;
-
-use gray_matter::{engine::TOML, Matter};
 use pulldown_cmark::{CowStr, Event};
 
 fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
@@ -37,20 +34,9 @@ fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
   events_to_return
 }
 
-pub fn get_markdown_content(path: String) -> String {
-  let path = format!("./content/{path}");
-  let mut file = std::fs::File::open(&path).expect("failed to open file");
-  let mut input = String::new();
-  file
-    .read_to_string(&mut input)
-    .expect("failed to read file");
-
-  let matter = Matter::<TOML>::new().parse(&input);
-
-  let parser = pulldown_cmark::Parser::new_ext(
-    &matter.content,
-    pulldown_cmark::Options::all(),
-  );
+pub fn markdown_to_html(markdown: &str) -> String {
+  let parser =
+    pulldown_cmark::Parser::new_ext(markdown, pulldown_cmark::Options::all());
   let events = add_markdown_heading_ids(parser.into_iter().collect());
   let events = highlight_pulldown::highlight_with_theme(
     events.into_iter(),
