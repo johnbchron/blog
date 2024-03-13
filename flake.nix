@@ -92,6 +92,7 @@
             mkdir -p $out/bin
             cp target/release/server $out/bin/blog
             cp -r target/site $out/bin/
+            cp -r content $out/bin/
           '';
           # Prevent cargo test and nextest from duplicating tests
           doCheck = false;
