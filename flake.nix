@@ -1,38 +1,18 @@
 
 {
-  description = "Build the Leptos Website for !";
-
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-
-    crane = {
-      url = "github:ipetkov/crane";
-      inputs.nixpkgs.follows = "nixpkgs";
-    };
-
-    flake-utils.url = "github:numtide/flake-utils";
-    
-    cargo-leptos = {
-      #url= "github:leptos-rs/cargo-leptos/v1.7";
-      url = "github:benwis/cargo-leptos";
-      flake = false;
-    };
-
-    rust-overlay = {
-      url = "github:oxalica/rust-overlay";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-utils.follows = "flake-utils";
-      };
-    };
+    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2311.556557.tar.gz";
+    rust-overlay.url = "https://flakehub.com/f/oxalica/rust-overlay/0.1.1271.tar.gz";
+    crane.url = "https://flakehub.com/f/ipetkov/crane/0.16.1.tar.gz";
+    cargo-leptos-src = { url = "github:leptos-rs/cargo-leptos"; flake = false; };
   };
 
-  outputs = { self, nixpkgs, crane, flake-utils, rust-overlay, ... } @inputs:
+  outputs = { self, nixpkgs, crane, flake-utils, rust-overlay, cargo-leptos-src }:
     flake-utils.lib.eachDefaultSystem (system:
       let
+        overlays = [ (import rust-overlay) ];
         pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ (import rust-overlay) ];
+          inherit system overlays;
         };
 
         toolchain = pkgs.rust-bin.selectLatestNightlyWith (toolchain: toolchain.default.override {
@@ -62,8 +42,13 @@
           filter = protoOrCargo;
         };
 
+        cargo-leptos = (import ./nix/cargo-leptos.nix) {
+          inherit pkgs craneLib;
+          cargo-leptos = cargo-leptos-src;
+        };
+
         # Common arguments can be set here
-        commonArgs = {
+        common_args = {
           inherit src;
 
           pname = "server";
@@ -88,15 +73,20 @@
           ];
         };
 
-        # Build *just* the cargo dependencies, so we can reuse
-        # all of that work (e.g. via cachix) when running in CI
-        cargoArtifacts = craneLib.buildDepsOnly (commonArgs // {
-          doCheck = false;
+        blog-deps = craneLib.buildDepsOnly (common_args // {
+          # if work is duplicated by the `server-site` package, update these
+          # commands from the logs of `cargo leptos build --release -vvv`
+          buildPhaseCargoCommand = ''
+            # build the server dependencies
+            cargo build --package=server --no-default-features --release
+            # build the frontend dependencies
+            cargo build --package=frontend --lib --target-dir=/build/source/target/front --target=wasm32-unknown-unknown --no-default-features --profile=wasm-release
+          '';
         });
 
         # Build the actual crate itself, reusing the dependency
         # artifacts from above.
-        blog = craneLib.buildPackage (commonArgs // {
+        blog = craneLib.buildPackage (common_args // {
           buildPhaseCargoCommand = "cargo leptos build --release -vvv";
           installPhaseCommand = ''
             mkdir -p $out/bin
@@ -105,73 +95,17 @@
           '';
           # Prevent cargo test and nextest from duplicating tests
           doCheck = false;
-          inherit cargoArtifacts;
-
-          SQLX_OFFLINE = "true";
-          # LEPTOS_BIN_TARGET_TRIPLE = "x86_64-unknown-linux-gnu"; # Adding this allows -Zbuild-std to work and shave 100kb off the WASM
-          LEPTOS_BIN_PROFILE_RELEASE = "release";
-          LEPTOS_LIB_PROFILE_RELEASE = "release-wasm-size";
-          APP_ENVIRONMENT = "production";
+          cargoArtifacts = blog-deps;
         });
-        
-        cargo-leptos = pkgs.rustPlatform.buildRustPackage rec {
-          pname = "cargo-leptos";
-          version = "0.1.8.1";
-          buildFeatures = ["no_downloads"]; # cargo-leptos will try to download Ruby and other things without this feature
-
-          src = inputs.cargo-leptos; 
-
-          cargoSha256 = "sha256-XgKr1XLGHtCZbc4ZQJuko4dsJPl+hWmsIBex62tKEJ8=";
-          # cargoSha256 = "";
-
-          nativeBuildInputs = [pkgs.pkg-config pkgs.openssl];
-
-          buildInputs = with pkgs;
-            [openssl pkg-config]
-            ++ lib.optionals stdenv.isDarwin [
-            darwin.Security darwin.apple_sdk.frameworks.CoreServices darwin.apple_sdk.frameworks.SystemConfiguration
-          ];
-
-          doCheck = false; # integration tests depend on changing cargo config
-
-          meta = with lib; {
-            description = "A build tool for the Leptos web framework";
-            homepage = "https://github.com/leptos-rs/cargo-leptos";
-            changelog = "https://github.com/leptos-rs/cargo-leptos/blob/v${version}/CHANGELOG.md";
-            license = with licenses; [mit];
-            maintainers = with maintainers; [benwis];
-          };
-	      };
-
-        flyConfig = ./fly.toml;
-
-        # Deploy the image to Fly with our own bash script
-        flyDeploy = pkgs.writeShellScriptBin "flyDeploy" ''
-          OUT_PATH=$(nix build --print-out-paths .#container)
-          HASH=$(echo $OUT_PATH | grep -Po "(?<=store\/)(.*?)(?=-)")
-          ${pkgs.skopeo}/bin/skopeo --insecure-policy --debug copy docker-archive:"$OUT_PATH" docker://registry.fly.io/$FLY_PROJECT_NAME:$HASH --dest-creds x:"$FLY_AUTH_TOKEN" --format v2s2
-          ${pkgs.flyctl}/bin/flyctl deploy -i registry.fly.io/$FLY_PROJECT_NAME:$HASH -c ${flyConfig} --remote-only
-        '';
 
       in {
         checks = {
           # Build the crate as part of `nix flake check` for convenience
           inherit blog;
 
-          # Run clippy (and deny all warnings) on the crate source,
-          # again, resuing the dependency artifacts from above.
-          blog-clippy = craneLib.cargoClippy (commonArgs // {
-            inherit cargoArtifacts;
+          blog-clippy = craneLib.cargoClippy (common_args // {
+            cargoArtifacts = blog-deps;
             cargoClippyExtraArgs = "--all-targets -- --deny warnings";
-          });
-
-          blog-doc = craneLib.cargoDoc (commonArgs //{
-            inherit cargoArtifacts;
-          });
-
-          # Check formatting
-          blog-fmt = craneLib.cargoFmt (commonArgs //{
-            inherit src;
           });
         };
 
@@ -183,44 +117,42 @@
         };
 
         # only create container if the system is x86_64-linux
-        packages.container = pkgs.dockerTools.buildImage {
+        packages.container = pkgs.dockerTools.buildLayeredImage {
           name = "blog";
-          created = "now";
           tag = "latest";
 
-          copyToRoot = pkgs.buildEnv {
-            name = "image-root";
-            paths = [ pkgs.cacert ./.  ];
-          };
+          contents = [ blog pkgs.cacert ];
           config = {
-            Env = [ "PATH=${blog}/bin" "APP_ENVIRONMENT=production" "LEPTOS_OUTPUT_NAME=blog" "LEPTOS_SITE_ADDR=0.0.0.0:3000" "LEPTOS_SITE_ROOT=${blog}/bin/site" ];
-
-            ExposedPorts = {
-              "3000/tcp" = { };
+            Cmd = [ "blog" ];
+            WorkingDir = "${blog}/bin";
+            Env = {
+              LEPTOS_OUTPUT_NAME = "blog";
+              LEPTOS_SITE_ROOT = "blog";
+              LEPTOS_SITE_PKG_DIR = "pkg";
+              LEPTOS_SITE_ADDR = "0.0.0.0:3000";
+              LEPTOS_RELOAD_PORT = "3001";
+              LEPTOS_ENV = "PROD";
+              LEPTOS_HASH_FILES = true;
             };
-
-            Cmd = [ "${blog}/bin/blog" ];
           };
-        };
-
-        apps.flyDeploy = flake-utils.lib.mkApp {
-          drv = flyDeploy;
         };
 
         devShells.default = pkgs.mkShell {
           inputsFrom = builtins.attrValues self.checks;
 
           # Extra inputs can be added here
-          nativeBuildInputs = commonArgs.buildInputs ++ commonArgs.nativeBuildInputs ++ (with pkgs; [
-            toolchain
-            dive # docker images
-            cargo-leptos
-            flyctl
-            skopeo # docker registries
-            bacon # cargo check w/ hot reload
-            marksman # markdown lsp
-          ]);
-          RUST_SRC_PATH = "${toolchain}/lib/rustlib/src/rust/library";
+          nativeBuildInputs =
+            common_args.buildInputs ++
+            common_args.nativeBuildInputs ++
+            (with pkgs; [
+              toolchain
+              dive # docker images
+              cargo-leptos
+              flyctl
+              skopeo # docker registries
+              bacon # cargo check w/ hot reload
+              marksman # markdown lsp
+            ]);
         };
       });
 }
