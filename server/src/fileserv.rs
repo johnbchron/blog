@@ -3,7 +3,7 @@ use app::{
   App,
 };
 use axum::{
-  body::{boxed, Body, BoxBody},
+  body::Body,
   extract::State,
   http::{Request, Response, StatusCode, Uri},
   response::{IntoResponse, Response as AxumResponse},
@@ -18,23 +18,27 @@ pub async fn file_and_error_handler(
   req: Request<Body>,
 ) -> AxumResponse {
   let root = options.site_root.clone();
-  let res = get_static_file(uri.clone(), &root).await.unwrap();
+  let res = get_static_file(
+    uri.clone(),
+    &root,
+    matches!(options.env, leptos_config::Env::PROD),
+  )
+  .await
+  .unwrap();
 
   if res.status() == StatusCode::OK {
     res.into_response()
   } else {
-    let handler = leptos_axum::render_app_to_stream(
-      options.to_owned(),
-      move || view! { <App/> },
-    );
+    let handler =
+      leptos_axum::render_app_to_stream(options, move || view! { <App/> });
     handler(req).await.into_response()
   }
 }
-
 async fn get_static_file(
   uri: Uri,
   root: &str,
-) -> Result<Response<BoxBody>, (StatusCode, String)> {
+  cache: bool,
+) -> Result<Response<Body>, (StatusCode, String)> {
   let req = Request::builder()
     .uri(uri.clone())
     .body(Body::empty())
@@ -42,11 +46,15 @@ async fn get_static_file(
   // `ServeDir` implements `tower::Service` so we can call it with
   // `tower::ServiceExt::oneshot` This path is relative to the cargo root
   match ServeDir::new(root).oneshot(req).await {
-    Ok(mut res) => {
-      res
-        .headers_mut()
-        .insert("Cache-Control", "public, max-age=86400".parse().unwrap());
-      Ok(res.map(boxed))
+    Ok(res) => {
+      let mut response = res.into_response();
+      if cache {
+        response.headers_mut().insert(
+          "Cache-Control",
+          "public, max-age=31536000, immutable".parse().unwrap(),
+        );
+      }
+      Ok(response)
     }
     Err(err) => Err((
       StatusCode::INTERNAL_SERVER_ERROR,

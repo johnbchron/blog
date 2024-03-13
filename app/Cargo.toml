@@ -14,14 +14,18 @@ leptos_axum = { workspace = true, optional = true }
 http.workspace = true
 cfg-if.workspace = true
 thiserror.workspace = true
-pulldown-cmark.workspace = true
 serde.workspace = true
-slug = "0.1.5"
-highlight-pulldown = "0.2"
-gray_matter = "0.2.6"
+
+pulldown-cmark = { workspace = true, optional = true }
+slug = { version = "0.1.5", optional = true }
+highlight-pulldown = { version = "0.2", optional = true }
+gray_matter = { version = "0.2.6", optional = true }
 
 [features]
 default = []
 hydrate = ["leptos/hydrate", "leptos_meta/hydrate", "leptos_router/hydrate"]
-ssr = ["leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum"]
+ssr = [
+  "leptos/ssr", "leptos_meta/ssr", "leptos_router/ssr", "dep:leptos_axum",
+  "dep:pulldown-cmark", "dep:slug", "dep:highlight-pulldown", "dep:gray_matter",
+]
 

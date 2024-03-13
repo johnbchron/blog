@@ -1,10 +1,11 @@
+#[cfg(feature = "ssr")]
+mod markdown;
+
 use std::io::Read;
 
-use gray_matter::{engine::TOML, Matter};
 use leptos::*;
 use leptos_meta::*;
 use leptos_router::*;
-use pulldown_cmark::{CowStr, Event};
 
 use crate::error_template::{AppError, ErrorTemplate};
 
@@ -48,138 +49,31 @@ pub fn App() -> impl IntoView {
   }
 }
 
-fn add_markdown_heading_ids(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
-  let mut parsing_header = false;
-  let mut heading_id = String::new();
-  let mut events_to_return = Vec::new();
-
-  for event in events {
-    match event {
-      Event::Start(pulldown_cmark::Tag::Heading(_, _, _)) => {
-        parsing_header = true;
-        heading_id.clear();
-      }
-      Event::End(pulldown_cmark::Tag::Heading(_, _, _)) => {
-        parsing_header = false;
-        heading_id = slug::slugify(heading_id.as_str());
-
-        events_to_return.push(Event::Text(CowStr::from(" ")));
-        events_to_return.push(Event::Html(CowStr::from(format!(
-          "<a href=\"#{}\" id=\"{}\"><span class=\"anchor-icon\">#</span></a>",
-          heading_id, heading_id
-        ))));
-      }
-      Event::Text(ref text) => {
-        if parsing_header {
-          heading_id.push_str(text);
-        }
-      }
-      _ => {}
-    }
-    events_to_return.push(event);
-  }
-
-  events_to_return
-}
-
-// fn highlight_code(code: &str, lang: &str) -> String {
-//   use syntect::{
-//     easy::HighlightLines,
-//     highlighting::{Style, ThemeSet},
-//     parsing::SyntaxSet,
-//     util::{as_24_bit_terminal_escaped, LinesWithEndings},
-//   };
-
-//   let ps = SyntaxSet::load_defaults_newlines();
-//   let ts = ThemeSet::load_defaults();
-
-//   println!("lang: {}", lang);
-//   let syntax = ps
-//     .find_syntax_by_extension(lang.split('.').last().unwrap_or("txt"))
-//     .unwrap();
-
-//   let output = syntect::html::highlighted_html_for_string(
-//     code,
-//     &ps,
-//     &syntax,
-//     &ts.themes["base16-ocean.dark"],
-//   );
-
-//   output.unwrap()
-// }
-
-// fn add_hightlighting(events: Vec<Event<'_>>) -> Vec<Event<'_>> {
-//   let mut parsing_code_block = false;
-//   let mut code_block_language = String::new();
-//   let mut code_block_content = String::new();
-//   let mut events_to_return = Vec::new();
-
-//   for event in events {
-//     match event {
-//       Event::Start(pulldown_cmark::Tag::CodeBlock(
-//         pulldown_cmark::CodeBlockKind::Fenced(ref lang),
-//       )) => {
-//         parsing_code_block = true;
-//         code_block_language = lang.to_string();
-//         code_block_content.clear();
-//       }
-//       Event::End(pulldown_cmark::Tag::CodeBlock(
-//         pulldown_cmark::CodeBlockKind::Fenced(_),
-//       )) => {
-//         parsing_code_block = false;
-//         let highlighted_code =
-//           highlight_code(&code_block_content, &code_block_language);
-//         events_to_return.push(Event::Html(CowStr::from(highlighted_code)));
-//       }
-//       Event::Text(ref text) => {
-//         if parsing_code_block {
-//           code_block_content.push_str(text);
-//           continue;
-//         }
-//       }
-//       _ => {}
-//     };
-//     events_to_return.push(event);
-//   }
-
-//   events_to_return
-// }
-
-fn get_markdown_content(path: String) -> String {
-  let path = format!("./content/{path}");
-  let mut file = std::fs::File::open(&path).expect("failed to open file");
-  let mut input = String::new();
-  file
-    .read_to_string(&mut input)
-    .expect("failed to read file");
-
-  let matter = Matter::<TOML>::new().parse(&input);
-
-  let parser = pulldown_cmark::Parser::new_ext(
-    &matter.content,
-    pulldown_cmark::Options::all(),
-  );
-  let events = add_markdown_heading_ids(parser.into_iter().collect());
-  // let events = add_hightlighting(events);
-  let events = highlight_pulldown::highlight_with_theme(
-    events.into_iter(),
-    "base16-ocean.dark",
-  )
-  .unwrap();
-  let mut html_output = String::new();
-  pulldown_cmark::html::push_html(&mut html_output, events.into_iter());
-
-  html_output
+#[server]
+async fn get_markdown_content(path: String) -> Result<String, ServerFnError> {
+  #[cfg(feature = "ssr")]
+  Ok(markdown::get_markdown_content(path))
 }
 
 #[component]
 fn Markdown(
   #[prop(into)] path: String,
-  #[prop(into, default = String::new())] class: String,
+  #[prop(default = "")] class: &'static str,
 ) -> impl IntoView {
-  let content = get_markdown_content(path);
+  let content =
+    create_blocking_resource(move || path.clone(), get_markdown_content);
+
   view! {
-    <div class=format!("markdown {class}")>{html::div().inner_html(content)}</div>
+    <Suspense>
+      { move || content.get().map(|c| match c {
+        Ok(ref content) => view!{
+          <div class=format!("markdown {class}")>{html::div().inner_html(c.unwrap())}</div>
+        }.into_view(),
+        _ => {
+          view! { <div>"Error loading content"</div> }.into_view()
+        }
+      })}
+    </Suspense>
   }
 }
 
@@ -205,6 +99,6 @@ fn Separator() -> impl IntoView {
 #[component]
 fn HomePage() -> impl IntoView {
   view! {
-      <Markdown path="posts/building-this-blog.md" />
+    <Markdown path="posts/building-this-blog.md" />
   }
 }
