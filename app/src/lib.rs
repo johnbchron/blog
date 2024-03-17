@@ -38,7 +38,7 @@ pub fn App() -> impl IntoView {
         outside_errors.insert_with_default_key(AppError::NotFound);
         view! { <ErrorTemplate outside_errors/> }.into_view()
       }>
-        <div class="px-4 md:px-0 md:mx-auto md:w-[48rem] pt-4 text-neutral-100 text-lg">
+        <div class="px-4 md:px-0 md:mx-auto md:w-[48rem] py-4 text-neutral-100 text-lg">
           // header
           <div class="flex gap-2 w-full text-lg font-light">
             <StyledLink href="/">"John Lewis\' Blog"</StyledLink>
