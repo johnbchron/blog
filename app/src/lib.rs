@@ -19,16 +19,20 @@ pub fn App() -> impl IntoView {
     <div class="bg-neutral-800 min-h-screen">
       <Stylesheet href="/pkg/blog.css"/>
       <Style>{include_str!("../../style/iosevka_term.css")}</Style>
+
+      // preloads the fonts
       <leptos_meta::Link
         rel="preload" href="/fonts/Firava.woff2"
         as_="font" type_="font/woff2" crossorigin="anonymous"
       />
-      <leptos_meta::Link rel="preload" href="/fonts/IosevkaTerm-Regular.woff2" as_="font" type_="font/woff2" crossorigin="anonymous" />
+      <leptos_meta::Link
+        rel="preload" href="/fonts/IosevkaTerm-Regular.woff2"
+        as_="font" type_="font/woff2" crossorigin="anonymous"
+      />
 
       // sets the document title
-      <Title text="Welcome to Leptos"/>
+      <Title text="John Lewis' Blog" />
 
-      // content for this welcome page
       <Router fallback=|| {
         let mut outside_errors = Errors::default();
         outside_errors.insert_with_default_key(AppError::NotFound);
@@ -37,9 +41,7 @@ pub fn App() -> impl IntoView {
         <div class="px-4 md:px-0 md:mx-auto md:w-[48rem] pt-4 text-neutral-100 text-lg">
           // header
           <div class="flex gap-2 w-full text-lg font-light">
-            <Link href="/">"John Lewis\' Blog"</Link>
-            "|"
-            <Link href="/posts">Posts</Link>
+            <StyledLink href="/">"John Lewis\' Blog"</StyledLink>
             <div class="flex-1" />
             <p class="items-center font-light">"Rust, Games, Musings"</p>
           </div>
@@ -56,9 +58,9 @@ pub fn App() -> impl IntoView {
 
 /// A styled hyperlink.
 #[component]
-fn Link(
+fn StyledLink(
   #[prop(into, default = String::new())] class: String,
-  href: &'static str,
+  #[prop(into)] href: String,
   children: Children,
 ) -> impl IntoView {
   view! {
@@ -78,16 +80,38 @@ fn HomePage() -> impl IntoView {
   let posts_resource =
     create_blocking_resource(|| (), |_| posts::get_all_posts());
 
-  view! {
+  let post_list_item = |p: posts::Post| {
+    view! {
+      <li>
+        <a href={format!("/post/{}", p.path)}>
+          {p.metadata.title}
+        </a>
+        " - " {p.metadata.written_on}
+      </li>
+    }
+  };
+
+  let post_elements = view! {
     <Suspense>
       { move || posts_resource.get().map(|p| match p {
-        Ok(posts) => view! {
-          <div class="flex flex-col gap-4">
-            { posts.iter().map(|p| view! { <p>{p.metadata.title.clone()}</p> }).collect_view() }
-          </div>
-        }.into_view(),
-        _ => view! { <p>"Loading..."</p> }.into_view()
+        Ok(posts) => posts.clone().into_iter().map(post_list_item).collect_view(),
+        _ => view! { <p>"This should never happen"</p> }.into_view()
       })}
     </Suspense>
+  };
+
+  view! {
+    <div class="markdown">
+      <h2>"Hey, John here!"</h2>
+      <p>
+        "Welcome to my blog. I write about my findings and thoughts, mostly regarding Rust, Nix, and game development. If you'd like to hire me, I'm available to hire! Contact me "
+      <a href="mailto:contact@jlewis.sh">"here"</a>
+      "."
+      </p>
+      <h3>"Recent Posts"</h3>
+      <ul>
+        {post_elements}
+      </ul>
+    </div>
   }
 }

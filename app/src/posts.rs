@@ -10,6 +10,7 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct Post {
   pub html_content: String,
+  pub path:         String,
   pub metadata:     PostMetadata,
 }
 
@@ -29,12 +30,13 @@ pub struct PostMetadata {
 }
 
 #[cfg(feature = "ssr")]
-pub fn extract_post(input: &str) -> Post {
+pub fn extract_post(path: &str, input: &str) -> Post {
   let matter = Matter::<YAML>::new().parse(input);
   let metadata = matter.data.unwrap();
 
   Post {
     html_content: crate::markdown::markdown_to_html(&matter.content),
+    path:         path.to_string(),
     metadata:     PostMetadata {
       title:      metadata["title"].as_string().unwrap(),
       written_on: metadata["written_on"].as_string().unwrap(),
@@ -45,8 +47,6 @@ pub fn extract_post(input: &str) -> Post {
 
 #[server]
 pub async fn get_all_posts() -> Result<Vec<Post>, ServerFnError> {
-  // find all files in `content/posts`
-
   let mut posts = Vec::new();
 
   for entry in std::fs::read_dir("./content/posts").unwrap() {
@@ -60,11 +60,14 @@ pub async fn get_all_posts() -> Result<Vec<Post>, ServerFnError> {
         .read_to_string(&mut input)
         .expect("failed to read file");
 
-      posts.push(extract_post(&input));
+      posts.push(extract_post(
+        path.file_stem().unwrap().to_str().unwrap(),
+        &input,
+      ));
     }
   }
 
-  Ok(posts)
+  Ok(posts.into_iter().filter(|p| p.metadata.public).collect())
 }
 
 #[server]
@@ -76,7 +79,13 @@ pub async fn get_post_by_path(path: String) -> Result<Post, ServerFnError> {
     .read_to_string(&mut input)
     .expect("failed to read file");
 
-  Ok(extract_post(&input))
+  let post = extract_post(&path, &input);
+
+  if post.metadata.public {
+    Ok(post)
+  } else {
+    Err(ServerFnError::new("Post not found"))
+  }
 }
 
 #[component]

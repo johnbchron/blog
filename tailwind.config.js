@@ -1,6 +1,6 @@
 module.exports = {
 	content: [
-    "./app/src/**/*.rs"
+    "./**/*.rs"
 	],
 	theme: {
 		fontFamily: {
@@ -13,5 +13,4 @@ module.exports = {
 			},
 		},
 	},
-	plugins: [ require("@tailwindcss/typography") ],
 }
