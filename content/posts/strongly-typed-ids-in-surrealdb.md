@@ -135,7 +135,259 @@ This is very very nice. Now as long as we serialize and deserialize our Rust str
 
 ## De/Serializing
 
+These DB models are useless unless we can serialize and deserialize to and from the DB and other places. Up until now we haven't interfaced with Surreal at all. We'll also bring in our first dependency, `serde`. Let's derive some things.
+
+```rust
+use serde::{Deserialize, Serialize};
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct ArtifactRecordId(String);
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct PhotoRecordId(String);
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct Artifact {
+  id: ArtifactRecordId,
+  object_store_key: String,
+}
+
+#[derive(Deserialize, Serialize, Clone, Debug)]
+pub struct Photo {
+  id: PhotoRecordId,
+  original_id: ArtifactRecordId,
+}
+```
+
+Now let's fire up Surreal and use in-memory mode. We'll just create an `Artifact`, put it into surreal, and then take it back out and inspect its contents.
+
+```shell
+$ cargo add surrealdb --features kv-mem
+$ cargo add serde --features derive
+$ cargo add tokio --features full
+```
+
+```rust
+#[tokio::main]
+async fn main() -> surrealdb::Result<()> {
+  // make an artifact
+  let artifact = Artifact::new(
+    ArtifactRecordId::new("iYZD1JS7XDypxU5i".to_string()),
+    "jp2Lb6511f3Y2qVm".to_string(),
+  );
+
+  // debug the artifact before it goes into surreal
+  dbg!(&artifact);
+
+  // create the db
+  let db = Surreal::new::<Mem>(()).await?;
+  db.use_ns("test").use_db("test").await?;
+
+  // put it into surreal
+  let created: Option<Artifact> = db
+    // pretend we made this `inner()` method for the IDs
+    .create(("artifact", artifact.id.inner().clone()))
+    .content(artifact)
+    .await?;
+
+  // debug the artifact after it comes out of surreal
+  dbg!(created);
+
+  Ok(())
+}
+```
+
+When we run this, we get
+
+```
+[src/main.rs:55:3] &artifact = Artifact {
+    id: ArtifactRecordId(
+        "iYZD1JS7XDypxU5i",
+    ),
+    object_store_key: "jp2Lb6511f3Y2qVm",
+}
+Error: Db(IdMismatch { value: "'iYZD1JS7XDypxU5i'" })
+```
+
+Oof! We didn't even get far enough to compare the two, as we failed to create the record.
+
+## SurrealDB IDs
+
+We got an ID mismatch. This is because Surreal is clever with its ser/de. If you have a field named `id`, Surreal will attempt to use it as a Surreal [`Thing`][2]. It will also work if your `id` field is single-value tuple struct wrapping a `Thing`. By the way, a `Thing` looks like this:
+
+```rust
+pub struct Thing {
+  pub tb: String,
+  pub id: Id,
+}
+```
+
+What's the mysterious `Id` there you ask? Why, it's an enum!
+
+```rust
+pub enum Id {
+  Number(i64),
+  String(String),
+  Array(Array),
+  Object(Object),
+  Generate(Gen),
+}
+```
+
+We're not going to use any of that directly though so I'll just move on. Let's try remodeling our strongly typed IDs to contain `Thing` instead of `String`.
+
+```rust
+pub struct ArtifactRecordId(Thing);
+```
+
+```rust
+pub struct PhotoRecordId(Thing);
+```
+
+```rust
+#[tokio::main]
+async fn main() -> surrealdb::Result<()> {
+  let artifact = Artifact::new(
+    ArtifactRecordId::new(Thing {
+      tb: "artifact".to_string(),
+      id: "iYZD1JS7XDypxU5i".into(),
+    }),
+    "jp2Lb6511f3Y2qVm".to_string(),
+  );
+
+  [cut]
+  
+  let created: Option<Artifact> = db
+    .create(artifact.id.inner()).content(artifact).await?;
+
+  [cut]
+}
+```
+
+When run, we get
+
+```
+[src/main.rs:58:3] &artifact = Artifact {
+    id: ArtifactRecordId(
+        Thing {
+            tb: "artifact",
+            id: String(
+                "iYZD1JS7XDypxU5i",
+            ),
+        },
+    ),
+    object_store_key: "jp2Lb6511f3Y2qVm",
+}
+[src/main.rs:71:3] created = Some(
+    Artifact {
+        id: ArtifactRecordId(
+            Thing {
+                tb: "artifact",
+                id: String(
+                    "iYZD1JS7XDypxU5i",
+                ),
+            },
+        ),
+        object_store_key: "jp2Lb6511f3Y2qVm",
+    },
+)
+```
+
+Awesome. This works, and we can clean up the ergonomics pretty easily. We can use the ID directly in the `.create()` method by implementing a trait, and we can also make the ID `Copy` because `Thing` is `Copy`. Then the create statement looks like this:
+
+```rust
+let created: Option<Artifact> = db.create(artifact.id).content(artifact).await?;
+```
+
+The trait for using the ID directly is this:
+
+```rust
+impl<R> IntoResource<Option<R>> for ArtifactId {
+  fn into_resource(self) -> Result<Resource, surrealdb::Error> {
+    Ok(Resource::RecordId(self.to_thing()))
+  }
+}
+```
+
+That seems ergonomic enough.
+
+## The Next Problem
+
+Now that we've got IDs and models it makes sense to separate them out into their own library, since the whole point of them existing is shared functionality. Maybe you'll have a workspace where you have a `core_types` crate that contains your IDs and models. Perfect. Maybe you'll want to share that with your Rust frontend, since you'll be sending some of these types over the network and you'd love to not repeat yourself.
+
+You can do that, but you'll wake up to a rude surprise. The `surrealdb` library -- you know, the one your `Thing` type comes from -- it weighs a hefty **336 dependencies** at the time of writing. This is absolutely unacceptable for embedding within a Rust-compiled WASM bundle, so we'll look for alternatives.
+
+The `surrealdb` library offers no feature flags that restrict it down to any manageable size, so the only option is to not include it in whatever version of your `core_types` library goes into your frontend package. How will we cut it out but still use the `Thing` type to de/serialize? This is the challenge.
+
 ---
 
-[1]: https://surrealdb.com/
+For me, this is where a lot of dead-end experimentation happened. One of the things I discovered is that the `id` field cleverness only requires that the type that occupies it can be deserialized from a `Thing`. If it serializes to a string (without a table prefix), that's fine; surreal will parse it into a `Thing`. Remember that this only applies to the `id` field though. If you follow this schema, strongly-typed IDs in non-`id` fields will only exist as strings without the table prefix. This is mostly fine though.
+
+## The Next Solution
+
+I won't walk you through all of it (frankly partially because I don't remember all of what I did), but I'll share my solution with you from the point that I encountered this problem.
+
+Essentially, feature flags are extremely underrated. The approach that I settled on is the following:
+ 1. Make a "server-side" feature flag for the `core_types` library.
+ 2. Find a strong backing ID type that is compatible with Surreal's inner `Id` type (like ULID).
+ 3. Create ID types for each model that wrap your backing ID, and include them in each model as I did above.
+ 4. Gated by the "server-side" feature flag, do the following:
+     1. Add the `surrealdb` dependency
+     2. Allow your ID types to deserialize from `Thing` or your backing ID type.
+
+The backing ID is just something to reliably generate primary keys, since requiring them to be in all our models before we send them to Surreal requires us to make them ourselves. [ULID][3] does a good job of that and is simple and light.
+
+The biggest challenge here is to allow deserializing your backing ID type from **either** `Thing` or your backing ID's serialized form, at runtime, with no other information. It's pretty easy though with an intermediary type and a bit of `serde` magic. Here's what that looks like; I'll pick `ulid` for the example.
+
+```rust
+#[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
+#[cfg_attr(feature = "ssr", serde(from = "ssr::UlidOrThing"))]
+pub struct UserId(ulid::Ulid);
+
+#[cfg(feature = "ssr")]
+mod ssr {
+  #[derive(Deserialize, PartialEq, Debug, Clone)]
+  #[serde(untagged)]
+  pub enum UserIdOrThing {
+    Thing(Thing),
+    UserId(ulid::Ulid),
+  }
+
+  impl From<UserIdOrThing> for UserId {
+    fn from(uiot: UserIdOrThing) -> Self {
+      match uiot {
+        UserIdOrThing::UserId(id) => UserId(id),
+        UserIdOrThing::Thing(thing) => {
+          UserId(ulid::Ulid::from_str(&thing.id.to_string()).unwrap())
+        }
+      }
+    }
+  }
+}
+```
+
+I'll walk you through this.
+
+- On our `UserId`, the `cfg_attr` attribute says "when on feature `ssr`, deserialize the given value as a `ssr::UlidOrThing`, and then call `UserId::from()` on the result".
+- Our `UserId` contains a `Ulid`.
+- In our `ssr` module (which is only active when the `ssr` feature is active; `Cargo.toml` not shown):
+  - `UserIdOrThing` has the `#[serde(untagged)]` attribute, which controls how `serde` handles enums, and in this case says "just look at the field types and guess which one it is". This has the (desired) side effect of allowing us to deserialize a `UserIdOrThing` from either a `UserId` or `Thing`.
+  - We can get a `UserId` from a `UserIdOrUlid`.
+
+When we deserialize a field which came from a `Thing` into a `UserId`, `serde` will attempt to deserialize the value to a `UserIdOrThing`. It will see the `tb` and `id` struct fields within the value, will not look for a tag (because of the `untagged` bit), and will match that combination of fields to `UserIdOrThing::Thing`. If instead it sees only a `String`, it'll match to `UserIdOrThing::UserId` and attempt to parse the `String` to a `Ulid`. Finally, it will convert the `UserIdOrThing` value to a `UserId` value.
+
+So now, when the `ssr` feature is disabled, the `UserId` is a plain wrapper around a plain `Ulid`, and there is no dependency on `surrealdb`. When the `ssr` feature is enabled, that same value and type can be correctly serialized and deserialized to/from Surreal, with the cost of the `surrealdb` dependency. Exactly what we wanted.
+
+## Wrapping Up
+
+If you feel like this is a lot of boilerplate, you're right, but it's worth it. You can switch `UserIdOrThing` to `UlidOrThing` to reduce boilerplate for multiple ID types (I did this in my implementation), but I wrote the blog post the other way and didn't want to rewrite it. You can also reduce implementation boilerplate using a simple `macro_rules!` macro.
+
+Anyways, I hope this was useful to you! I am actively building a production application with Surreal and Rust top-to-bottom (as you might have guessed), so I would love any questions or suggestions you might have. You can email me [here](mailto:blog@jlewis.sh). Thanks for reading!
+
+---
+
 [^1]: Python definitely beats us with "pythonic", but I think "rusty" is more endearing.
+
+[1]: https://surrealdb.com/
+[2]: https://docs.rs/surrealdb/latest/surrealdb/sql/struct.Thing.html/
+[3]: https://github.com/ulid/spec
