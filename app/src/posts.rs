@@ -17,9 +17,10 @@ pub struct Post {
 
 impl Post {
   pub fn full_post(&self) -> impl IntoView {
-    view! {
-      <div class="markdown">{html::div().inner_html(self.html_content.clone())}</div>
-    }
+    leptos::leptos_dom::html::div()
+      .attr("class", "markdown")
+      .with_view_marker("-0")
+      .inner_html(self.html_content.clone())
   }
 }
 
