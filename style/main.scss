@@ -52,7 +52,7 @@
 }
 
 .markdown blockquote {
-  @apply bg-zinc-700 my-3 p-2 pl-4 border-zinc-400 border-l-4;
+  @apply bg-zinc-700/30 my-4 p-2 pl-4 border-zinc-400 border-l-4 border rounded-r-2xl;
 }
 
 .markdown ol,
