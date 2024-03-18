@@ -4,8 +4,6 @@ written_on: "28/01/24"
 public: true
 ---
 
-# Building this blog: A Space Odyssey
-
 ### Preamble
 Welcome to my blog. This poor thing is a work of love, handcrafted to my tastes. I've heard it said that writing a blog is like the `Hello World!` of web development, i.e. the least useful application, and after building one myself, I agree. If I only wanted a blog, there are already plenty of competent solutions. I could go the consumer route with Wix or Wordpress, or if I wanted to keep my soul with me I could choose a more philosophically-pleasing developer-oriented option, or even just a static-site generator.
 

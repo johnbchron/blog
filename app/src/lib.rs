@@ -71,7 +71,7 @@ fn StyledLink(
 /// A full-width separator.
 #[component]
 fn Separator() -> impl IntoView {
-  view! { <div class="h-[1px] w-full border-b border-neutral-100/50 my-4" /> }
+  view! { <div class="h-[1px] w-full border-t-2 border-neutral-400/50 my-4" /> }
 }
 
 /// Renders the home page of your application.

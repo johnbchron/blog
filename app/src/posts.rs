@@ -104,6 +104,11 @@ pub fn PostPage() -> impl IntoView {
       { move || post_resource.get().map(|p| match p {
         Ok(post) => view! {
           <Title text={post.metadata.title.clone()} />
+          <div class="markdown">
+            <h1>{post.metadata.title.clone()}</h1>
+            <p>Written on {post.metadata.written_on.clone()}</p>
+            <hr />
+          </div>
           { post.full_post() }
         }.into_view(),
         _ => view! { <p>"Loading..."</p> }.into_view()
