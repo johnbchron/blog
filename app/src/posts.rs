@@ -19,7 +19,6 @@ impl Post {
   pub fn full_post(&self) -> impl IntoView {
     leptos::leptos_dom::html::div()
       .attr("class", "markdown")
-      .with_view_marker("-0")
       .inner_html(self.html_content.clone())
   }
 }
