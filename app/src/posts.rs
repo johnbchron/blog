@@ -1,3 +1,4 @@
+#[cfg(feature = "ssr")]
 use std::io::Read;
 
 #[cfg(feature = "ssr")]

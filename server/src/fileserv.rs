@@ -1,7 +1,4 @@
-use app::{
-  error_template::{AppError, ErrorTemplate},
-  App,
-};
+use app::App;
 use axum::{
   body::Body,
   extract::State,

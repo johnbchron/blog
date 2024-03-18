@@ -1,3 +1,5 @@
+// This has to be imported for `wasm_bindgen` to work.
+#[allow(unused_imports)]
 use app::*;
 use leptos::*;
 use wasm_bindgen::prelude::wasm_bindgen;
