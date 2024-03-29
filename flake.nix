@@ -4,7 +4,7 @@
     nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2311.556557.tar.gz";
     rust-overlay.url = "https://flakehub.com/f/oxalica/rust-overlay/0.1.1271.tar.gz";
     crane.url = "https://flakehub.com/f/ipetkov/crane/0.16.1.tar.gz";
-    cargo-leptos-src = { url = "github:leptos-rs/cargo-leptos"; flake = false; };
+    cargo-leptos-src = { url = "github:leptos-rs/cargo-leptos?tag=v0.2.16"; flake = false; };
   };
 
   outputs = { self, nixpkgs, crane, flake-utils, rust-overlay, cargo-leptos-src }:
