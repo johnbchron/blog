@@ -68,6 +68,8 @@ Ah, good question. Another thing to address. The root of the problem behind the 
 
 ## Beginning to Type Our IDs
 
+We'll start by using the [newtype][newtype] pattern to wrap our IDs, with one new type for each table.
+
 ```rust
 pub struct ArtifactRecordId(String);
 
@@ -302,9 +304,18 @@ let created: Option<Artifact> = db.create(artifact.id).content(artifact).await?;
 The trait for using the ID directly is this:
 
 ```rust
+use surrealdb::{
+  Error,
+  opt::{IntoResource, Resource},
+  sql::{Id, Thing},
+};
+
 impl<R> IntoResource<Option<R>> for ArtifactId {
-  fn into_resource(self) -> Result<Resource, surrealdb::Error> {
-    Ok(Resource::RecordId(self.to_thing()))
+  fn into_resource(self) -> Result<Resource, Error> {
+    Ok(Resource::RecordId(Thing {
+      tb: "artifact".to_string(),
+      id: Id::String(self.0.to_string())
+    }))
   }
 }
 ```
@@ -330,7 +341,7 @@ I won't walk you through all of it (frankly partially because I don't remember a
 Essentially, feature flags are extremely underrated. The approach that I settled on is the following:
  1. Make a "server-side" feature flag for the `core_types` library.
  2. Find a strong backing ID type that is compatible with Surreal's inner `Id` type (like ULID).
- 3. Create ID types for each model that wrap your backing ID, and include them in each model as I did above.
+ 3. Create wrapper ID types around your backing ID for each model you have, and include them in each model as I did above.
  4. Gated by the "server-side" feature flag, do the following:
      1. Add the `surrealdb` dependency
      2. Allow your ID types to deserialize from `Thing` or your backing ID type.
@@ -341,24 +352,24 @@ The biggest challenge here is to allow deserializing your backing ID type from *
 
 ```rust
 #[derive(Serialize, Deserialize, PartialEq, Debug, Clone)]
-#[cfg_attr(feature = "ssr", serde(from = "ssr::UlidOrThing"))]
-pub struct UserId(ulid::Ulid);
+#[cfg_attr(feature = "ssr", serde(from = "ssr::UserRecordIdOrThing"))]
+pub struct UserRecordId(ulid::Ulid);
 
 #[cfg(feature = "ssr")]
 mod ssr {
   #[derive(Deserialize, PartialEq, Debug, Clone)]
   #[serde(untagged)]
-  pub enum UserIdOrThing {
+  pub enum UserRecordIdOrThing {
     Thing(Thing),
-    UserId(ulid::Ulid),
+    UserRecordId(ulid::Ulid),
   }
 
-  impl From<UserIdOrThing> for UserId {
-    fn from(uiot: UserIdOrThing) -> Self {
+  impl From<UserRecordIdOrThing> for UserRecordId {
+    fn from(uiot: UserRecordIdOrThing) -> Self {
       match uiot {
-        UserIdOrThing::UserId(id) => UserId(id),
-        UserIdOrThing::Thing(thing) => {
-          UserId(ulid::Ulid::from_str(&thing.id.to_string()).unwrap())
+        UserRecordIdOrThing::UserRecordId(id) => UserRecordId(id),
+        UserRecordIdOrThing::Thing(thing) => {
+          UserRecordId(ulid::Ulid::from_str(&thing.id.to_string()).unwrap())
         }
       }
     }
@@ -368,19 +379,19 @@ mod ssr {
 
 I'll walk you through this.
 
-- On our `UserId`, the `cfg_attr` attribute says "when on feature `ssr`, deserialize the given value as a `ssr::UlidOrThing`, and then call `UserId::from()` on the result".
-- Our `UserId` contains a `Ulid`.
+- On our `UserRecordId`, the `cfg_attr` attribute says "when on feature `ssr`, deserialize the given value as a `ssr::UserRecordIddOrThing`, and then call `UserRecordId::from()` on the result".
+- Our `UserRecordId` contains a `Ulid`.
 - In our `ssr` module (which is only active when the `ssr` feature is active; `Cargo.toml` not shown):
-  - `UserIdOrThing` has the `#[serde(untagged)]` attribute, which controls how `serde` handles enums, and in this case says "just look at the field types and guess which one it is". This has the (desired) side effect of allowing us to deserialize a `UserIdOrThing` from either a `UserId` or `Thing`.
-  - We can get a `UserId` from a `UserIdOrUlid`.
+  - `UserRecordIdOrThing` has the `#[serde(untagged)]` attribute, which controls how `serde` handles enums, and in this case says "just look at the field types and guess which one it is". This has the (desired) side effect of allowing us to deserialize a `UserRecordIdOrThing` from either a `UserRecordId` or `Thing`.
+  - We can get a `UserRecordId` from a `UserRecordIdOrUlid`.
 
-When we deserialize a field which came from a `Thing` into a `UserId`, `serde` will attempt to deserialize the value to a `UserIdOrThing`. It will see the `tb` and `id` struct fields within the value, will not look for a tag (because of the `untagged` bit), and will match that combination of fields to `UserIdOrThing::Thing`. If instead it sees only a `String`, it'll match to `UserIdOrThing::UserId` and attempt to parse the `String` to a `Ulid`. Finally, it will convert the `UserIdOrThing` value to a `UserId` value.
+When we deserialize a field which came from a `Thing` into a `UserRecordId`, `serde` will attempt to deserialize the value to a `UserRecordIdOrThing`. It will see the `tb` and `id` struct fields within the value, will not look for a tag (because of the `untagged` bit), and will match that combination of fields to `UserRecordIdOrThing::Thing`. If instead it sees only a `String`, it'll match to `UserRecordIdOrThing::UserRecordId` and attempt to parse the `String` to a `Ulid`. Finally, it will convert the `UserRecordIdOrThing` value to a `UserRecordId` value.
 
-So now, when the `ssr` feature is disabled, the `UserId` is a plain wrapper around a plain `Ulid`, and there is no dependency on `surrealdb`. When the `ssr` feature is enabled, that same value and type can be correctly serialized and deserialized to/from Surreal, with the cost of the `surrealdb` dependency. Exactly what we wanted.
+So now, when the `ssr` feature is disabled, the `UserRecordId` is a plain wrapper around a plain `Ulid`, and there is no dependency on `surrealdb`. When the `ssr` feature is enabled, that same value and type can be correctly serialized and deserialized to/from Surreal, with the cost of the `surrealdb` dependency. Exactly what we wanted.
 
 ## Wrapping Up
 
-If you feel like this is a lot of boilerplate, you're right, but it's worth it. You can switch `UserIdOrThing` to `UlidOrThing` to reduce boilerplate for multiple ID types (I did this in my implementation), but I wrote the blog post the other way and didn't want to rewrite it. You can also reduce implementation boilerplate using a simple `macro_rules!` macro.
+If you feel like this is a lot of boilerplate, you're right, but it's worth it. You can switch `UserRecordIdOrThing` to `UlidOrThing` to reduce boilerplate for multiple ID types (I did this in my implementation), but I wrote the blog post the other way and didn't want to rewrite it. You can also reduce implementation boilerplate using a simple `macro_rules!` macro -- I'd love to provide an awesome resource here but I learned `macro_rules!` through experimentation, so let me look for one quickly... ah, [here](https://doc.rust-lang.org/reference/macros-by-example.html) we are.
 
 Anyways, I hope this was useful to you! I am actively building a production application with Surreal and Rust top-to-bottom (as you might have guessed), so I would love any questions or suggestions you might have. You can email me [here](mailto:blog@jlewis.sh). Thanks for reading!
 
@@ -389,5 +400,6 @@ Anyways, I hope this was useful to you! I am actively building a production appl
 [^1]: Python definitely beats us with "pythonic", but I think "rusty" is more endearing.
 
 [1]: https://surrealdb.com/
+[newtype]: https://doc.rust-lang.org/rust-by-example/generics/new_types.html
 [2]: https://docs.rs/surrealdb/latest/surrealdb/sql/struct.Thing.html/
 [3]: https://github.com/ulid/spec
