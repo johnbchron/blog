@@ -80,3 +80,9 @@ There are others that I could've looked at but my tolerance for missing features
 > "Fine, I'll do it myself." -Thanos
 
 Obviously we're going to build it together, you and I. Or rather, I'll build it in front of you. You know what I mean.
+
+Alright so what are the parts involved? Obviously some kind of `Job` trait, where the implementer describes job parameters and some config, an async method that accepts those parameters for running the job, and a couple associated types for unique job status, return value, and error types. The job "run" function should also take some sort of context reference that lets it interact with the runner and the store. That covers the definition of jobs.
+
+For manipulating jobs, we need some sort of `Client` type that lets you submit, update, read the status of, and cancel jobs. We need a job `Runner` which queries the store and runs jobs that can be run. The runner is also responsible for supplying the context to the job.
+
+The runner should "claim" a job so that we can have multiple runners at the same time, and the runner should also actively tick the job in the job store periodically while the job run function is running so that it can tell when another runner has forfeited a job (the job is "claimed" but was last ticked too long ago). The final responsibility of the runner is to aggregate logs and put them in long-term storage.
