@@ -1,13 +1,15 @@
 
 {
   inputs = {
-    nixpkgs.url = "https://flakehub.com/f/NixOS/nixpkgs/0.2311.556557.tar.gz";
-    rust-overlay.url = "https://flakehub.com/f/oxalica/rust-overlay/0.1.1271.tar.gz";
-    crane.url = "https://flakehub.com/f/ipetkov/crane/0.16.1.tar.gz";
-    cargo-leptos-src = { url = "github:leptos-rs/cargo-leptos?tag=v0.2.16"; flake = false; };
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    rust-overlay = {
+      url = "https://flakehub.com/f/oxalica/rust-overlay/0.1.tar.gz";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+    crane.url = "https://flakehub.com/f/ipetkov/crane/0.17.tar.gz";
   };
 
-  outputs = { self, nixpkgs, crane, flake-utils, rust-overlay, cargo-leptos-src }:
+  outputs = { self, nixpkgs, crane, flake-utils, rust-overlay, }:
     flake-utils.lib.eachDefaultSystem (system:
       let
         overlays = [ (import rust-overlay) ];
@@ -43,11 +45,6 @@
           filter = protoOrCargo;
         };
 
-        cargo-leptos = (import ./nix/cargo-leptos.nix) {
-          inherit pkgs craneLib;
-          cargo-leptos = cargo-leptos-src;
-        };
-
         # Common arguments can be set here
         common_args = {
           inherit src;
@@ -57,7 +54,7 @@
 
           nativeBuildInputs = [
             # Add additional build inputs here
-            cargo-leptos
+            pkgs.cargo-leptos
             pkgs.cargo-generate
             pkgs.binaryen
             pkgs.dart-sass

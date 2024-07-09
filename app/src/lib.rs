@@ -30,6 +30,8 @@ pub fn App() -> impl IntoView {
         as_="font" type_="font/woff2" crossorigin="anonymous"
       />
 
+      <leptos_meta::Link rel="icon" href="/favicon.png" type_="image/png" />
+
       // sets the document title
       <Title text="John Lewis' Blog" />
 
@@ -77,8 +79,7 @@ fn Separator() -> impl IntoView {
 /// Renders the home page of your application.
 #[component]
 fn HomePage() -> impl IntoView {
-  let posts_resource =
-    create_blocking_resource(|| (), |_| posts::get_all_posts());
+  let posts_resource = create_resource(|| (), |_| posts::get_all_posts());
 
   let post_list_item = |p: posts::Post| {
     view! {
