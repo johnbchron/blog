@@ -25,25 +25,7 @@
         inherit (pkgs) lib;
         craneLib = (crane.mkLib pkgs).overrideToolchain toolchain;
 
-        # Only keeps markdown files
-				filterGenerator = pattern: path: _type: builtins.match pattern path != null;
-				cssFilter = filterGenerator ".*css$";
-        jsFilter = filterGenerator ".*js$";
-				ttfFilter = filterGenerator ".*ttf$";
-				woff2Filter = filterGenerator ".*woff2$";
-				webpFilter = filterGenerator ".*webp$";
-				jpegFilter = filterGenerator ".*jpeg$";
-				pngFilter = filterGenerator ".*png$";
-				icoFilter = filterGenerator ".*ico$";
-        mdFilter = filterGenerator ".*md$";
-        protoOrCargo = path: type:
-          (craneLib.filterCargoSources path type) || (cssFilter path type) || (jsFilter path type) || (ttfFilter path type) || (woff2Filter path type) || (webpFilter path type) || (jpegFilter path type) || (pngFilter path type) || (icoFilter path type) || (mdFilter path type);
-
-        # Include more types of files in our bundle
-        src = lib.cleanSourceWith {
-          src = ./.; # The original, unfiltered source
-          filter = protoOrCargo;
-        };
+        src = ./.;
 
         # Common arguments can be set here
         common_args = {

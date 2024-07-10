@@ -1,5 +1,5 @@
 ---
-title: "A New Rust Job Scheduler"
+title: "A New Rust Job Runner"
 written_on: "09/07/24"
 public: true
 ---
