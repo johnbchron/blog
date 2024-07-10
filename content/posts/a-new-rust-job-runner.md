@@ -1,7 +1,7 @@
 ---
 title: "A New Rust Job Runner"
 written_on: "09/07/24"
-public: true
+public: false
 ---
 
 # Premise
@@ -232,12 +232,10 @@ pub trait Job: Portable {
 
 Seems simple enough. Let's add the `run()` function. We're also adding a little `JobContext` struct that we'll pass as a reference into the `run()` function.
 
-For now we'll pass an immutable reference and we'll push responsibility onto future us for doing the interior mutability to make that happen. Probably a mutex or something; we won't need a lot of bandwidth out of the context. Whatever -- later.
+For now we'll pass an immutable reference to the `JobContext` and we'll push responsibility onto future us for doing the interior mutability to make that happen. Probably a mutex or something; we won't need a lot of bandwidth out of the context. Whatever -- later.
 
 ```rust
 #![feature(associated_type_defaults)]
-
-use std::future::Future;
 
 use serde::{Deserialize, Serialize};
 
@@ -329,4 +327,25 @@ pub trait Job: Portable {
 }
 ```
 
-I won't say it's pretty, but it's something.
+I won't say it's pretty, but it's something. We still need a type for job-specific status.
+
+```rust
+pub trait Job: Portable {
+  type Status: Portable + Clone = ();
+  type Result: Portable = ();
+  type Error: Portable = ();
+
+  fn config(&self) -> JobConfig;
+
+  fn run(
+    params: Self,
+    context: &JobContext,
+  ) -> impl Future<Output = Result<Self::Result, Self::Error>> + Send;
+}
+```
+
+For everything except the `Status` type, I can generally assume we'll only have one copy alive at a given time after deserializing, but we might want to clone and pass around the `Status` type, so I'm tentatively also adding the `Clone` bound.
+
+## The `JobRunner`
+
+The `JobRunner` needs to generic on a storage backend, and it also needs to be able to manage and articulate running jobs.
