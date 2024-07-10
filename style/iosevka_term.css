@@ -1,7 +1,7 @@
 @font-face {
-	font-family: 'Iosevka Term Web';
+	font-family: 'Iosevka Custom';
 	font-display: swap;
 	font-weight: 100 900;
 	font-style: normal;
-	src: url('/fonts/IosevkaTerm-Regular.woff2') format('woff2');
+	src: url('/fonts/Iosevkacustom-Regular.ttf') format('truetype');
 }

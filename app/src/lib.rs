@@ -26,8 +26,8 @@ pub fn App() -> impl IntoView {
         as_="font" type_="font/woff2" crossorigin="anonymous"
       />
       <leptos_meta::Link
-        rel="preload" href="/fonts/IosevkaTerm-Regular.woff2"
-        as_="font" type_="font/woff2" crossorigin="anonymous"
+        rel="preload" href="/fonts/Iosevkacustom-Regular.ttf"
+        as_="font" type_="font/ttf" crossorigin="anonymous"
       />
 
       <leptos_meta::Link rel="icon" href="/favicon.png" type_="image/png" />
