@@ -1,4 +1,3 @@
-use app::App;
 use axum::{
   body::Body,
   extract::State,
@@ -6,6 +5,7 @@ use axum::{
   response::{IntoResponse, Response as AxumResponse},
 };
 use leptos::*;
+use site_app::App;
 use tower::ServiceExt;
 use tower_http::services::ServeDir;
 

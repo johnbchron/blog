@@ -1,7 +1,7 @@
 // This has to be imported for `wasm_bindgen` to work.
-#[allow(unused_imports)]
-use app::*;
 use leptos::*;
+#[allow(unused_imports)]
+use site_app::*;
 use wasm_bindgen::prelude::wasm_bindgen;
 
 #[wasm_bindgen]

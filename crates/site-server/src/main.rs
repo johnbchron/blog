@@ -1,8 +1,8 @@
-use app::*;
 use axum::{routing::post, Router};
 use fileserv::file_and_error_handler;
 use leptos::*;
 use leptos_axum::{generate_route_list, LeptosRoutes};
+use site_app::*;
 use tower_http::compression::CompressionLayer;
 
 pub mod fileserv;

@@ -1,6 +1,6 @@
 [workspace]
 resolver = "2"
-members = ["app", "frontend", "server"]
+members = ["crates/*"]
 
 # need to be applied only to wasm build
 [profile.wasm-release]
@@ -30,11 +30,6 @@ tower-http = { version = "0.5", features = ["full"] }
 wasm-bindgen = "=0.2.92"
 pulldown-cmark = "0.9"
 
-[patch.crates-io]
-leptos = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
-leptos_axum = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
-leptos_meta = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
-leptos_router = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6be" }
 
 # See https://github.com/akesson/cargo-leptos for documentation of all the parameters.
 
@@ -42,33 +37,35 @@ leptos_router = { git = 'https://github.com/leptos-rs/leptos.git', rev = "c06f6b
 # that are used together frontend (lib) & server (bin)
 [[workspace.metadata.leptos]]
 # this name is used for the wasm, js and css file names
-name = "blog"
+name = "site"
 
-hash-files = true
+# we turn this on for the release but keep it off in dev
+# https://github.com/leptos-rs/cargo-leptos/issues/271
+hash-files = false
 
-bin-package = "server"
-lib-package = "frontend"
+bin-package = "site-server"
+lib-package = "site-frontend"
 
 site-root = "target/site"
 site-pkg-dir = "pkg"
 
-style-file = "style/main.scss"
-assets-dir = "public"
+style-file = "crates/site-app/style/main.scss"
+assets-dir = "crates/site-app/public"
 
 site-addr = "127.0.0.1:3000"
 reload-port = 3001
 
 browserquery = "defaults"
 
-tailwind-input-file = "style/main.scss"
+tailwind-input-file = "crates/site-app/style/main.scss"
+tailwind-config-file = "crates/site-app/style/tailwind/tailwind.config.js"
 
+# set by cargo-leptos
 watch = false
-watch-additional-files = [ "content/*" ]
 env = "DEV"
 
 bin-features = []
 bin-default-features = false
-
 lib-features = []
 lib-default-features = false
 lib-profile-release = "wasm-release"
