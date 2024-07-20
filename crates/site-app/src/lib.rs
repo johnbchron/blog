@@ -18,7 +18,7 @@ pub fn App() -> impl IntoView {
   view! {
     <div class="bg-neutral-800 min-h-screen">
       <Stylesheet href="/pkg/site.css"/>
-      <Style>{include_str!("../style/iosevka_term.css")}</Style>
+      <Style>{include_str!("../style/fonts.css")}</Style>
 
       // preloads the fonts
       <leptos_meta::Link
