@@ -1,4 +1,4 @@
-use std::{io::Cursor, path::PathBuf, str::FromStr};
+use std::io::Cursor;
 
 use pulldown_cmark::{CodeBlockKind, CowStr, Event, Tag};
 

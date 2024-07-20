@@ -94,10 +94,8 @@ pub fn PostPage() -> impl IntoView {
   let params = use_params_map();
   let path = params().get("path").unwrap().clone();
 
-  let post_resource = create_blocking_resource(
-    move || path.clone(),
-    |path| get_post_by_path(path),
-  );
+  let post_resource =
+    create_blocking_resource(move || path.clone(), get_post_by_path);
 
   view! {
     <Suspense>
