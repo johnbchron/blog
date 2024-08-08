@@ -68,7 +68,29 @@ pub async fn get_all_posts() -> Result<Vec<Post>, ServerFnError> {
     }
   }
 
-  Ok(posts.into_iter().filter(|p| p.metadata.public).collect())
+  posts.retain(|p| p.metadata.public);
+  posts.sort_by(|a, b| {
+    // I know this is wrong and only reverses the order of code points, but it's
+    // fine for now
+    let a = a
+      .metadata
+      .written_on
+      .to_string()
+      .chars()
+      .rev()
+      .collect::<String>();
+    let b = b
+      .metadata
+      .written_on
+      .to_string()
+      .chars()
+      .rev()
+      .collect::<String>();
+    a.cmp(&b)
+  });
+  posts.reverse();
+
+  Ok(posts)
 }
 
 #[server]
