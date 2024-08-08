@@ -69,7 +69,7 @@
 }
 
 .markdown a {
-  @apply text-periwinkle hover:underline;
+  @apply text-periwinkle underline hover:no-underline;
 }
 
 .markdown .footnote-definition {

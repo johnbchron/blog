@@ -50,7 +50,7 @@ pub fn App() -> impl IntoView {
       }>
         <div class="font-mono px-4 md:px-0 md:mx-auto md:w-[48rem] py-4 text-neutral-100 text-lg">
           // header
-          <div class="flex gap-2 w-full text-lg font-light">
+          <div class="flex gap-2 w-full">
             <StyledLink href="/">"John Lewis\' Blog"</StyledLink>
             <div class="flex-1" />
             <p class="items-center font-light">"Rust, Games, Musings"</p>
@@ -74,7 +74,7 @@ fn StyledLink(
   children: Children,
 ) -> impl IntoView {
   view! {
-    <a class=format!("text-periwinkle hover:underline {class}") href=href>{children()}</a>
+    <a class=format!("text-periwinkle underline hover:no-underline {class}") href=href>{children()}</a>
   }
 }
 
