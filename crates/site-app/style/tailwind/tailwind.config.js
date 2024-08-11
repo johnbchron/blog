@@ -1,6 +1,6 @@
 module.exports = {
 	content: [
-    "./**/*.rs"
+    "./crates/**/*.rs"
 	],
 	theme: {
 		fontFamily: {
