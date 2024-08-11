@@ -114,8 +114,10 @@ fn HomePage() -> impl IntoView {
       <h2>"Hey, John here!"</h2>
       <p>
         "Welcome to my blog. I write about my findings and thoughts, mostly regarding Rust, Nix, and game development. If you'd like to hire me, I'm available to hire! Contact me "
-      <a href="mailto:contact@jlewis.sh">"here"</a>
-      "."
+        <a href="mailto:contact@jlewis.sh">"here"</a>
+        ", or find me on "
+        <a rel="me" href="https://social.treehouse.systems/@johnbchron">Mastodon</a>
+        "."
       </p>
       <h3>"Recent Posts"</h3>
       <ul>
