@@ -1,6 +1,6 @@
 ---
 title: "Fully Procedural Interactions in Games"
-written_on: "08/08/24"
+written_on: "2024.08.08"
 public: true
 ---
 

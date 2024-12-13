@@ -1,6 +1,6 @@
 ---
 title: "Strongly-typed IDs in SurrealDB"
-written_on: "18/03/24"
+written_on: "2024.03.18"
 public: true
 ---
 

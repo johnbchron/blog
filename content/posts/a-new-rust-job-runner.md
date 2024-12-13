@@ -1,6 +1,6 @@
 ---
 title: "A New Rust Job Runner"
-written_on: "09/07/24"
+written_on: "2024.09.07"
 public: false
 ---
 

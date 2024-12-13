@@ -29,10 +29,10 @@ pub fn App() -> impl IntoView {
         rel="preload" href="/fonts/IosevkaCustom-Regular.ttf"
         as_="font" type_="font/ttf" crossorigin="anonymous"
       />
-      <leptos_meta::Link
-        rel="preload" href="/fonts/IosevkaCustom-Bold.ttf"
-        as_="font" type_="font/ttf" crossorigin="anonymous"
-      />
+      // <leptos_meta::Link
+      //   rel="preload" href="/fonts/IosevkaCustom-Bold.ttf"
+      //   as_="font" type_="font/ttf" crossorigin="anonymous"
+      // />
       <leptos_meta::Link
         rel="preload" href="/fonts/IosevkaCustom-Italic.ttf"
         as_="font" type_="font/ttf" crossorigin="anonymous"

@@ -49,7 +49,7 @@ lib-package = "site-frontend"
 site-root = "target/site"
 site-pkg-dir = "pkg"
 
-style-file = "crates/site-app/style/main.scss"
+style-file = "crates/site-app/style/main.css"
 assets-dir = "crates/site-app/public"
 
 site-addr = "127.0.0.1:3000"
@@ -57,7 +57,7 @@ reload-port = 3001
 
 browserquery = "defaults"
 
-tailwind-input-file = "crates/site-app/style/main.scss"
+tailwind-input-file = "crates/site-app/style/main.css"
 tailwind-config-file = "crates/site-app/style/tailwind/tailwind.config.js"
 
 # set by cargo-leptos

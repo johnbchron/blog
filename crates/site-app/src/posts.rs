@@ -88,7 +88,6 @@ pub async fn get_all_posts() -> Result<Vec<Post>, ServerFnError> {
       .collect::<String>();
     a.cmp(&b)
   });
-  posts.reverse();
 
   Ok(posts)
 }

@@ -1,6 +1,6 @@
 ---
 title: "Building this blog: A Space Odyssey"
-written_on: "28/01/24"
+written_on: "2024.01.28"
 public: true
 ---
 
