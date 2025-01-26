@@ -146,7 +146,7 @@
         };
 
       in {
-ecks = {
+        checks = {
           # lint packages
           app-hydrate-clippy = craneLib.cargoClippy (common-args // {
             cargoArtifacts = site-server-deps;
@@ -199,6 +199,7 @@ ecks = {
             flyctl # fly.io
             bacon # cargo check w/ hot reload
             marksman # markdown lsp
+            harper
 
             cargo-leptos # main leptos build tool
             # used by cargo-leptos for styling
