@@ -79,3 +79,8 @@
 .markdown .footnote-definition p {
   @apply my-0;
 }
+
+.markdown img {
+  margin-left: auto;
+  margin-right: auto;
+}

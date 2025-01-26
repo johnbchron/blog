@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   width="172pt"
+   height="188pt"
+   viewBox="0.00 0.00 172.00 188.00"
+   version="1.1"
+   id="svg10"
+   sodipodi:docname="reactivity-1.svg"
+   inkscape:version="1.4 (e7c3feb100, 2024-10-09)"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <defs
+     id="defs10" />
+  <sodipodi:namedview
+     id="namedview10"
+     pagecolor="#ffffff"
+     bordercolor="#000000"
+     borderopacity="0.25"
+     inkscape:showpageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="true"
+     inkscape:deskcolor="#d1d1d1"
+     inkscape:document-units="pt"
+     inkscape:zoom="4.5917553"
+     inkscape:cx="107.25746"
+     inkscape:cy="124.89777"
+     inkscape:window-width="2268"
+     inkscape:window-height="1404"
+     inkscape:window-x="0"
+     inkscape:window-y="0"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="graph0" />
+  <g
+     id="graph0"
+     class="graph"
+     transform="scale(1 1) rotate(0) translate(4 184)">
+    <title
+       id="title1">G</title>
+    <!-- a -->
+    <g
+       id="node1"
+       class="node">
+      <title
+         id="title2">a</title>
+      <ellipse
+         fill="none"
+         stroke="black"
+         cx="27"
+         cy="-162"
+         rx="27"
+         ry="18"
+         id="ellipse2"
+         style="fill:#ffffff;fill-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="27"
+         y="-157.8"
+         font-family="Times,serif"
+         font-size="14.00"
+         id="text2">a: 5</text>
+    </g>
+    <!-- c -->
+    <g
+       id="node3"
+       class="node">
+      <title
+         id="title3">c</title>
+      <ellipse
+         fill="none"
+         stroke="black"
+         cx="65"
+         cy="-90"
+         rx="27"
+         ry="18"
+         id="ellipse3"
+         style="fill:#ffffff;fill-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="65"
+         y="-85.8"
+         font-family="Times,serif"
+         font-size="14.00"
+         id="text3">c: +</text>
+    </g>
+    <!-- a&#45;&gt;c -->
+    <g
+       id="edge1"
+       class="edge">
+      <title
+         id="title4">a-&gt;c</title>
+      <path
+         fill="none"
+         stroke="black"
+         d="M35.81,-144.76C40.27,-136.55 45.8,-126.37 50.84,-117.09"
+         id="path4" />
+      <polygon
+         fill="black"
+         stroke="black"
+         points="53.82,-118.94 55.51,-108.48 47.67,-115.6 53.82,-118.94"
+         id="polygon4" />
+    </g>
+    <!-- b -->
+    <g
+       id="node2"
+       class="node">
+      <title
+         id="title5">b</title>
+      <ellipse
+         fill="none"
+         stroke="black"
+         cx="103"
+         cy="-162"
+         rx="30.62"
+         ry="18"
+         id="ellipse5"
+         style="fill:#ffffff;fill-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="103"
+         y="-157.8"
+         font-family="Times,serif"
+         font-size="14.00"
+         id="text5">b: 10</text>
+    </g>
+    <!-- b&#45;&gt;c -->
+    <g
+       id="edge2"
+       class="edge">
+      <title
+         id="title6">b-&gt;c</title>
+      <path
+         fill="none"
+         stroke="black"
+         d="M93.99,-144.41C89.64,-136.39 84.31,-126.57 79.41,-117.54"
+         id="path6" />
+      <polygon
+         fill="black"
+         stroke="black"
+         points="82.51,-115.92 74.66,-108.8 76.36,-119.26 82.51,-115.92"
+         id="polygon6" />
+    </g>
+    <!-- e -->
+    <g
+       id="node5"
+       class="node">
+      <title
+         id="title7">e</title>
+      <ellipse
+         fill="none"
+         stroke="black"
+         cx="101"
+         cy="-18"
+         rx="27"
+         ry="18"
+         id="ellipse7"
+         style="fill:#ffffff;fill-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="101"
+         y="-13.8"
+         font-family="Times,serif"
+         font-size="14.00"
+         id="text7">e: *</text>
+    </g>
+    <!-- c&#45;&gt;e -->
+    <g
+       id="edge3"
+       class="edge">
+      <title
+         id="title8">c-&gt;e</title>
+      <path
+         fill="none"
+         stroke="black"
+         d="M73.35,-72.76C77.58,-64.55 82.81,-54.37 87.58,-45.09"
+         id="path8" />
+      <polygon
+         fill="black"
+         stroke="black"
+         points="90.54,-46.99 92,-36.49 84.32,-43.79 90.54,-46.99"
+         id="polygon8" />
+    </g>
+    <!-- d -->
+    <g
+       id="node4"
+       class="node">
+      <title
+         id="title9">d</title>
+      <ellipse
+         fill="none"
+         stroke="black"
+         cx="137"
+         cy="-90"
+         rx="27"
+         ry="18"
+         id="ellipse9"
+         style="fill:#ffffff;fill-opacity:1" />
+      <text
+         text-anchor="middle"
+         x="137"
+         y="-85.8"
+         font-family="Times,serif"
+         font-size="14.00"
+         id="text9">d: 2</text>
+    </g>
+    <!-- d&#45;&gt;e -->
+    <g
+       id="edge4"
+       class="edge">
+      <title
+         id="title10">d-&gt;e</title>
+      <path
+         fill="none"
+         stroke="black"
+         d="M128.65,-72.76C124.42,-64.55 119.19,-54.37 114.42,-45.09"
+         id="path10" />
+      <polygon
+         fill="black"
+         stroke="black"
+         points="117.68,-43.79 110,-36.49 111.46,-46.99 117.68,-43.79"
+         id="polygon10" />
+    </g>
+  </g>
+</svg>
