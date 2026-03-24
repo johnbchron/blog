@@ -49,8 +49,13 @@ pub(crate) fn page_wrapper(children: Markup, ctx: Ctx) -> Markup {
         // icon
         link rel="icon" type="image/svg+xml" href=(FAVICON_SVG_HREF);
       }
-      body class="font-serif font-[450]" {
-        main class="m-4 sm:container sm:mx-auto flex flex-col min-h-svh" {
+      body class="bg-bg text-fg font-serif" {
+        main class="m-4 sm:container sm:mx-auto flex flex-col gap-4 min-h-svh" {
+          div class="flex flex-row gap-2 items-center text-fg-dim text-sm" {
+            a href="/" class="link" { "Home" }
+            " • "
+            a href="/about" class="link" { "About" }
+          }
           (children)
           div class="flex-1" {}
         }
