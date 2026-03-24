@@ -1,7 +1,7 @@
 @import "tailwindcss" source("../crates");
 
 @theme {
-  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --font-serif: "Noto Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
   
   /* disable larger breakpoints */
   --breakpoint-lg: initial;

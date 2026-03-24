@@ -42,14 +42,14 @@ pub(crate) fn page_wrapper(children: Markup, ctx: Ctx) -> Markup {
         style { (PreEscaped(stylesheet)) }
 
         // font stylesheets
-        style { (PreEscaped(include_css!("../../style/fonts/roboto.css"))) }
+        style { (PreEscaped(include_css!("../../style/fonts/noto_serif.css"))) }
 
         title { "John Lewis" }
 
         // icon
         link rel="icon" type="image/svg+xml" href=(FAVICON_SVG_HREF);
       }
-      body {
+      body class="font-serif font-[450]" {
         main class="m-4 sm:container sm:mx-auto flex flex-col min-h-svh" {
           (children)
           div class="flex-1" {}
