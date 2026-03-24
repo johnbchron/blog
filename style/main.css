@@ -1,0 +1,20 @@
+@import "tailwindcss" source("../crates");
+
+@theme {
+  --font-sans: "Roboto", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  
+  /* disable larger breakpoints */
+  --breakpoint-lg: initial;
+  --breakpoint-xl: initial;
+  --breakpoint-2xl: initial;
+}
+
+@layer components {
+  .title {
+    @apply text-3xl font-semibold tracking-tight;
+  }
+
+  .link {
+    @apply underline hover:no-underline;
+  }
+}

@@ -1,0 +1,20 @@
+[package]
+name = "blog"
+version.workspace = true
+
+edition.workspace = true
+
+[dependencies]
+axum.workspace = true
+columbo.workspace = true
+const_base.workspace = true
+const_format.workspace = true
+css-minify-macro.workspace = true
+http-body-util.workspace = true
+maud.workspace = true
+miette.workspace = true
+tokio.workspace = true
+tower.workspace = true
+tower-http.workspace = true
+tracing.workspace = true
+tracing-subscriber.workspace = true

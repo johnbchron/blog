@@ -1,0 +1,6 @@
+exclude = [ "target/**", "result/**", ".direnv/**" ]
+
+[formatting]
+column_width = 100
+compact_arrays = false
+reorder_keys = true
