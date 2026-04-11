@@ -38,6 +38,8 @@ pub(crate) fn page_wrapper(
       head {
         meta charset="utf-8";
         meta name="viewport" content="width=device-width, initial-scale=1";
+        meta name="title" content=(head_title);
+        meta name="description" content=(crate::home_page::SITE_DESCRIPTION);
 
         // load htmx
         script src=(HTMX_ASSET_PATH) { }

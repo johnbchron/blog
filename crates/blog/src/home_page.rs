@@ -1,6 +1,11 @@
 use axum::response::IntoResponse;
 use maud::html;
 
+pub const SITE_DESCRIPTION: &str = "Welcome to my space. Please enjoy a \
+                                    select sampling of my thought, lossily \
+                                    translated into words. My opinions are my \
+                                    own, and all content is of human origin.";
+
 use crate::{ctx::ResponseSeed, page_wrapper::page_wrapper};
 
 pub(crate) async fn home_page(
@@ -8,9 +13,7 @@ pub(crate) async fn home_page(
 ) -> impl IntoResponse {
   const TITLE: &str = "John Lewis";
   let page = html! {
-    p {
-      "Welcome to my space. Please enjoy a select sampling of my thought, lossily translated into words. My opinions are my own, and all content is of human origin."
-    }
+    p { (SITE_DESCRIPTION) }
   };
 
   let doc = page_wrapper(TITLE, page, ctx);
