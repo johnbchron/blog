@@ -4,7 +4,7 @@ primary_region = "dfw"
 swap_size_mb = 2_048
 
 [build]
-image = "server-container:latest"
+image = "blog:latest"
 
 [http_service]
 auto_start_machines = false
