@@ -69,7 +69,7 @@ pub(crate) fn page_wrapper(
             "•"
             a href="/about" class="link" { "About" }
           }
-          div class="flex flex-col gap-4" {
+          div class="markdown" {
             p class="title" { (page_title) }
             (children)
           }

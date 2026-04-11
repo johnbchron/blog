@@ -3,10 +3,11 @@
 @theme {
   --font-serif: "IBM Plex Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
-  --color-bg:        oklch(0.162 0.01   253);
-  --color-fg:        oklch(0.9   0.0001 253);
-  --color-fg-dim:    oklch(0.717 0.0021 253);
-  --color-fg-dimmer: oklch(0.606 0.0031 253);
+  --color-bg:        oklch(0.15 0.01  253);
+  --color-fg:        oklch(0.9  0.0   253);
+  --color-fg-dim:    oklch(0.75 0.002 253);
+  --color-fg-dimmer: oklch(0.6  0.003 253);
+  --color-fg-accent: oklch(0.8  0.08  253);
   
   /* disable larger breakpoints */
   --breakpoint-lg: initial;
@@ -20,6 +21,136 @@
   }
 
   .link {
-    @apply underline hover:decoration-transparent transition-colors duration-150;
+    /* decoration */
+    @apply underline;
+    /* animation */
+    @apply hover:decoration-transparent transition-colors duration-150;
+  }
+
+  /* markdown formatting */
+  .markdown {
+    @apply flex flex-col gap-4 text-base text-fg max-w-[72ch];
+
+    & h1 {
+      @apply text-3xl font-bold tracking-tight mt-4;
+    }
+
+    & h2 {
+      @apply text-2xl font-semibold tracking-tight mt-3;
+    }
+
+    & h3 {
+      @apply text-xl font-semibold mt-2;
+    }
+
+    & h4 {
+      @apply text-xl font-semibold mt-1;
+    }
+
+    & h5 {
+      @apply text-lg font-semibold mt-1;
+    }
+
+    & h6 {
+      @apply text-base font-semibold mt-1;
+    }
+
+    & p { }
+
+    & a {
+      @apply text-fg-accent;
+      @apply underline decoration-[1.5px];
+      @apply hover:decoration-transparent transition-colors duration-150;
+    }
+
+    & strong {
+      @apply font-semibold;
+    }
+
+    & em {
+      @apply italic;
+    }
+
+    & del {
+      @apply line-through decoration-[1.5px] text-fg-dim;
+    }
+
+    & ul {
+      @apply list-disc pl-6 flex flex-col gap-1;
+    }
+
+    & ol {
+      @apply list-decimal pl-6 flex flex-col gap-1;
+    }
+
+    /* & li { */
+      /* & > ul, */
+      /* & > ol { */
+      /* } */
+    /* } */
+
+    & blockquote {
+      @apply border-l-4 border-fg-dimmer pl-4 italic text-fg-dim;
+    }
+
+    & code {
+      @apply px-1.5 py-0.5 rounded text-sm font-mono bg-fg-dimmer/30;
+    }
+
+    & pre {
+      @apply p-4 overflow-x-auto text-sm bg-fg-dimmer/30 rounded my-2;
+
+      & code {
+        @apply bg-transparent text-inherit p-0 rounded-none;
+      }
+    }
+
+    & hr {
+      @apply border-0 border-t border-fg-dimmer my-2;
+    }
+
+    & table {
+      @apply w-full border-collapse my-2 text-sm;
+    }
+
+    & thead {
+      @apply bg-fg-dimmer/20;
+    }
+
+    & th {
+      @apply border-[1.5px] border-fg-dimmer/50 px-3 py-2 text-left font-semibold;
+    }
+
+    & td {
+      @apply border-[1.5px] border-fg-dimmer/50 px-3 py-2 align-top;
+    }
+
+    & tr:nth-child(even) td {
+      @apply bg-fg-dimmer/10;
+    }
+
+    & img {
+      @apply max-w-full h-auto rounded;
+    }
+
+    & figure {
+      @apply my-2;
+
+      & figcaption {
+        @apply text-sm text-fg-dim text-center mt-2;
+      }
+    }
+
+    & mark {
+      @apply bg-yellow-200 px-0.5 rounded;
+    }
+
+    & sup {
+      @apply text-xs align-super;
+    }
+
+    & sub {
+      @apply text-xs align-sub;
+    }
   }
 }
