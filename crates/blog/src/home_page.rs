@@ -9,7 +9,7 @@ pub(crate) async fn home_page(
   const TITLE: &str = "John Lewis";
   let page = html! {
     p {
-      "Welcome to my space. Please enjoy a select sampling of my thought-space, lossily translated into words. My opinions are my own, and all content is of human origin."
+      "Welcome to my space. Please enjoy a select sampling of my thought, lossily translated into words. My opinions are my own, and all content is of human origin."
     }
   };
 
