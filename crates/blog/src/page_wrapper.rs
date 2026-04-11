@@ -12,12 +12,25 @@ const FAVICON_SVG_HREF: &str =
 const HTMX_ASSET_PATH: &str = "/dist/htmx.min.js";
 const HTXM_CONFIG: &str = r#"{ "globalViewTransitions": true }"#;
 
-pub(crate) fn page_wrapper(children: Markup, ctx: Ctx) -> Markup {
+pub(crate) fn page_wrapper(
+  page_title: impl AsRef<str>,
+  children: Markup,
+  ctx: Ctx,
+) -> Markup {
+  const HEAD_TITLE_PREFIX: &str = "John Lewis";
+
   let stylesheet = &ctx.state().stylesheet;
 
   let preload_fonts = PRELOAD_FONT_PATHS.iter().map(|p| html! {
     link rel="preload" href=(p) as="font" type="font/woff2" crossorigin="anonymous";
   });
+
+  let page_title = page_title.as_ref();
+  let head_title = if page_title == HEAD_TITLE_PREFIX {
+    HEAD_TITLE_PREFIX.to_owned()
+  } else {
+    format!("{HEAD_TITLE_PREFIX} - {page_title}")
+  };
 
   html! {
     (maud::DOCTYPE)
@@ -44,7 +57,7 @@ pub(crate) fn page_wrapper(children: Markup, ctx: Ctx) -> Markup {
         // font stylesheets
         style { (PreEscaped(include_css!("../../style/fonts/ibm_plex_serif.css"))) }
 
-        title { "John Lewis" }
+        title { (head_title) }
 
         // icon
         link rel="icon" type="image/svg+xml" href=(FAVICON_SVG_HREF);
@@ -56,7 +69,10 @@ pub(crate) fn page_wrapper(children: Markup, ctx: Ctx) -> Markup {
             "•"
             a href="/about" class="link" { "About" }
           }
-          (children)
+          div class="flex flex-col gap-4" {
+            p class="title" { (page_title) }
+            (children)
+          }
           div class="flex-1" {}
         }
       }

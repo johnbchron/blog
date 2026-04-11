@@ -64,12 +64,12 @@ async fn main() -> miette::Result<()> {
 }
 
 async fn fallback(ResponseSeed(ctx, resp): ResponseSeed) -> impl IntoResponse {
+  const TITLE: &str = "That page doesn't exist.";
   let page = html! {
-    p class="title" { "That page doesn't exist." }
     a class="link" href="/" { "Go home" }
   };
 
-  let doc = page_wrapper(page, ctx);
+  let doc = page_wrapper(TITLE, page, ctx);
   resp.into_stream(doc)
 }
 
