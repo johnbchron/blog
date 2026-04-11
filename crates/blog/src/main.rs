@@ -4,6 +4,7 @@ mod home_page;
 mod page_wrapper;
 mod setup_tracing;
 mod signals;
+mod test_page;
 
 use axum::{
   Router, ServiceExt, handler::Handler, response::IntoResponse, routing::get,
@@ -74,5 +75,7 @@ async fn fallback(ResponseSeed(ctx, resp): ResponseSeed) -> impl IntoResponse {
 }
 
 fn router() -> Router<AppState> {
-  Router::new().route("/", get(home_page::home_page))
+  Router::new()
+    .route("/", get(self::home_page::home_page))
+    .route("/test", get(self::test_page::test_page))
 }
