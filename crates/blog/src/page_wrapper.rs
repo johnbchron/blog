@@ -42,7 +42,7 @@ pub(crate) fn page_wrapper(children: Markup, ctx: Ctx) -> Markup {
         style { (PreEscaped(stylesheet)) }
 
         // font stylesheets
-        style { (PreEscaped(include_css!("../../style/fonts/noto_serif.css"))) }
+        style { (PreEscaped(include_css!("../../style/fonts/ibm_plex_serif.css"))) }
 
         title { "John Lewis" }
 
