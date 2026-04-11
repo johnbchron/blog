@@ -92,6 +92,7 @@
           (toolchain_fn pkgs)
           pkgs.gcc
           pkgs.tailwindcss_4
+          pkgs.bacon
         ];
         motd = "\n  Welcome to the {2}${server-args.pname}{reset} shell.\n";
       };
