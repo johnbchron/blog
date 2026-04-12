@@ -64,7 +64,7 @@ pub(crate) fn page_wrapper(
         // icon
         link rel="icon" type="image/svg+xml" href=(FAVICON_SVG_HREF);
       }
-      body class="bg-bg text-fg font-serif" {
+      body class="bg-bg-1 text-fg font-serif" {
         main class="p-4 sm:container sm:mx-auto flex flex-col gap-4 min-h-svh" {
           div class="flex flex-row gap-2 items-center text-fg-dim text-sm" {
             a href="/" class="link" { "Home" }

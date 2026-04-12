@@ -95,11 +95,11 @@
     }
 
     & code {
-      @apply px-1.5 py-0.5 rounded text-sm font-mono bg-fg-dimmer/30;
+      @apply px-1.5 py-0.5 rounded text-sm font-mono bg-bg-2;
     }
 
     & pre {
-      @apply p-4 overflow-x-auto text-sm bg-fg-dimmer/30 rounded my-2;
+      @apply p-4 overflow-x-auto text-sm bg-bg-2 rounded-sm my-2;
 
       & code {
         @apply bg-transparent text-inherit p-0 rounded-none;
@@ -115,11 +115,11 @@
     }
 
     & thead {
-      @apply bg-fg-dimmer/20;
+      @apply bg-bg-2/50;
     }
 
     & th {
-      @apply border-[1.5px] border-fg-dimmer/50 px-3 py-2 text-left font-semibold;
+      @apply border-[1.5px] border-fg-dimmer/50 px-3 py-2 text-left font-medium;
     }
 
     & td {
@@ -127,11 +127,11 @@
     }
 
     & tr:nth-child(even) td {
-      @apply bg-fg-dimmer/10;
+      @apply bg-bg-2/25;
     }
 
     & img {
-      @apply max-w-full h-auto rounded;
+      @apply max-w-full h-auto rounded mx-auto;
     }
 
     & figure {
