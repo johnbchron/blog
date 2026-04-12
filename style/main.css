@@ -21,6 +21,12 @@
   --breakpoint-2xl: initial;
 }
 
+@layer base {
+  :root {
+    scrollbar-gutter: stable;
+  }
+}
+
 @layer components {
   .title {
     @apply text-3xl font-medium tracking-tight;
