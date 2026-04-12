@@ -23,10 +23,7 @@
   }
 
   .link {
-    /* decoration */
-    @apply underline;
-    /* animation */
-    @apply hover:decoration-transparent transition-colors duration-150;
+    @apply underline hover:decoration-transparent transition-colors duration-150;
   }
 
   /* markdown formatting */
@@ -84,12 +81,6 @@
     & ol {
       @apply list-decimal pl-6 flex flex-col gap-1;
     }
-
-    /* & li { */
-      /* & > ul, */
-      /* & > ol { */
-      /* } */
-    /* } */
 
     & blockquote {
       @apply border-l-4 border-fg-dimmer pl-4 italic text-fg-dim;
