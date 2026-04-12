@@ -6,14 +6,14 @@
 
   --hue: 155;
 
-  --color-bg-1:      oklch(0.2  0.015 var(--hue));
-  --color-bg-2:      oklch(0.3  0.01  var(--hue));
+  --color-bg-1:      oklch(0.2   0.01  var(--hue));
+  --color-bg-2:      oklch(0.275 0.004 var(--hue));
 
-  --color-fg:        oklch(0.9  0.0   var(--hue));
-  --color-fg-dim:    oklch(0.75 0.002 var(--hue));
-  --color-fg-dimmer: oklch(0.6  0.003 var(--hue));
+  --color-fg:        oklch(0.9   0.0   var(--hue));
+  --color-fg-dim:    oklch(0.75  0.002 var(--hue));
+  --color-fg-dimmer: oklch(0.6   0.003 var(--hue));
 
-  --color-accent: oklch(0.8  0.08  var(--hue));
+  --color-accent:    oklch(0.8   0.08  var(--hue));
   
   /* disable larger breakpoints */
   --breakpoint-lg: initial;
