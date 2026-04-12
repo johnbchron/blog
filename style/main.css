@@ -1,4 +1,5 @@
 @import "tailwindcss" source("../crates");
+@source "./main.css";
 
 @theme {
   --font-serif: "IBM Plex Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
