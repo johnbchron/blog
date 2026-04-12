@@ -3,7 +3,8 @@
 @theme {
   --font-serif: "IBM Plex Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
-  --color-bg:        oklch(0.15 0.01  253);
+  --color-bg-1:      oklch(0.2  0.03  253);
+  --color-bg-2:      oklch(0.3  0.02  253);
   --color-fg:        oklch(0.9  0.0   253);
   --color-fg-dim:    oklch(0.75 0.002 253);
   --color-fg-dimmer: oklch(0.6  0.003 253);
@@ -17,7 +18,7 @@
 
 @layer components {
   .title {
-    @apply text-3xl font-semibold tracking-tight;
+    @apply text-3xl font-medium tracking-tight;
   }
 
   .link {
@@ -32,27 +33,27 @@
     @apply flex flex-col gap-4 text-base text-fg max-w-[72ch];
 
     & h1 {
-      @apply text-3xl font-bold tracking-tight mt-4;
+      @apply text-3xl font-medium tracking-tight mt-4;
     }
 
     & h2 {
-      @apply text-2xl font-semibold tracking-tight mt-3;
+      @apply text-2xl font-medium tracking-tight mt-3;
     }
 
     & h3 {
-      @apply text-xl font-semibold mt-2;
+      @apply text-xl font-medium mt-2;
     }
 
     & h4 {
-      @apply text-xl font-semibold mt-1;
+      @apply text-xl font-medium mt-1;
     }
 
     & h5 {
-      @apply text-lg font-semibold mt-1;
+      @apply text-lg font-medium mt-1;
     }
 
     & h6 {
-      @apply text-base font-semibold mt-1;
+      @apply text-base font-medium mt-1;
     }
 
     & p { }
@@ -64,7 +65,7 @@
     }
 
     & strong {
-      @apply font-semibold;
+      @apply font-medium;
     }
 
     & em {
