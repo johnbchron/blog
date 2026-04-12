@@ -1,19 +1,23 @@
 @import "tailwindcss" source("../crates");
 @source "./main.css";
 
-@theme {
+@theme inline {
   --font-serif: "IBM Plex Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
-  --hue: 155;
+  --hue: 30;
 
-  --color-bg-1:      oklch(0.2   0.01  var(--hue));
-  --color-bg-2:      oklch(0.275 0.004 var(--hue));
-
-  --color-fg:        oklch(0.9   0.0   var(--hue));
-  --color-fg-dim:    oklch(0.75  0.002 var(--hue));
-  --color-fg-dimmer: oklch(0.6   0.003 var(--hue));
-
-  --color-accent:    oklch(0.8   0.08  var(--hue));
+  --color-dark-bg-1:       oklch(0.2   0.01  var(--hue));
+  --color-dark-bg-2:       oklch(0.275 0.004 var(--hue));
+  --color-dark-fg:         oklch(0.9   0.0   var(--hue));
+  --color-dark-fg-dim:     oklch(0.75  0.002 var(--hue));
+  --color-dark-fg-dimmer:  oklch(0.6   0.003 var(--hue));
+  --color-dark-accent:     oklch(0.8   0.08  var(--hue));
+  --color-light-bg-1:      oklch(0.98  0.01  var(--hue));
+  --color-light-bg-2:      oklch(0.725 0.004 var(--hue));
+  --color-light-fg:        oklch(0.1   0.0   var(--hue));
+  --color-light-fg-dim:    oklch(0.25  0.002 var(--hue));
+  --color-light-fg-dimmer: oklch(0.4   0.003 var(--hue));
+  --color-light-accent:    oklch(0.2   0.4   var(--hue));
   
   /* disable larger breakpoints */
   --breakpoint-lg: initial;
@@ -23,6 +27,7 @@
 
 @layer base {
   :root {
+    /* color-scheme: light dark; */
     scrollbar-gutter: stable;
   }
 }
@@ -38,7 +43,7 @@
 
   /* markdown formatting */
   .markdown {
-    @apply flex flex-col gap-4 text-base text-fg max-w-[72ch];
+    @apply flex flex-col gap-4 text-base text-light-fg dark:text-dark-fg max-w-[72ch];
 
     & h1 {
       @apply text-3xl font-medium tracking-tight mt-4;
@@ -67,7 +72,7 @@
     & p { }
 
     & a {
-      @apply text-accent;
+      @apply text-light-accent dark:text-dark-accent;
       @apply underline decoration-[1.5px];
       @apply hover:decoration-transparent transition-colors duration-150;
     }
@@ -81,7 +86,7 @@
     }
 
     & del {
-      @apply line-through decoration-[1.5px] text-fg-dim;
+      @apply line-through decoration-[1.5px] text-light-fg-dim dark:text-dark-fg-dim;
     }
 
     & ul {
@@ -93,15 +98,15 @@
     }
 
     & blockquote {
-      @apply border-l-4 border-fg-dimmer pl-4 italic text-fg-dim;
+      @apply border-l-4 border-light-fg-dimmer dark:border-dark-fg-dimmer pl-4 italic text-light-fg-dim dark:text-dark-fg-dim;
     }
 
     & code {
-      @apply px-1.5 py-0.5 rounded text-sm font-mono bg-bg-2;
+      @apply px-1.5 py-0.5 rounded text-sm font-mono bg-light-bg-2 dark:bg-dark-bg-2;
     }
 
     & pre {
-      @apply p-4 overflow-x-auto text-sm bg-bg-2 rounded-sm my-2;
+      @apply p-4 overflow-x-auto text-sm bg-light-bg-2 dark:bg-dark-bg-2 rounded-sm my-2;
 
       & code {
         @apply bg-transparent text-inherit p-0 rounded-none;
@@ -109,7 +114,7 @@
     }
 
     & hr {
-      @apply border-0 border-t border-fg-dimmer my-2;
+      @apply border-0 border-t border-light-fg-dimmer dark:border-dark-fg-dimmer my-2;
     }
 
     & table {
@@ -117,19 +122,19 @@
     }
 
     & thead {
-      @apply bg-bg-2/50;
+      @apply bg-light-bg-2 dark:bg-dark-bg-2/50;
     }
 
     & th {
-      @apply border-[1.5px] border-fg-dimmer/50 px-3 py-2 text-left font-medium;
+      @apply border-[1.5px] border-light-fg-dimmer/50 dark:border-dark-fg-dimmer/50 px-3 py-2 text-left font-medium;
     }
 
     & td {
-      @apply border-[1.5px] border-fg-dimmer/50 px-3 py-2 align-top;
+      @apply border-[1.5px] border-light-fg-dimmer/50 dark:border-dark-fg-dimmer/50 px-3 py-2 align-top;
     }
 
     & tr:nth-child(even) td {
-      @apply bg-bg-2/25;
+      @apply bg-light-bg-2 dark:bg-dark-bg-2/25;
     }
 
     & img {
@@ -140,7 +145,7 @@
       @apply my-2;
 
       & figcaption {
-        @apply text-sm text-fg-dim text-center mt-2;
+        @apply text-sm text-light-fg-dim dark:text-dark-fg-dim text-center mt-2;
       }
     }
 
