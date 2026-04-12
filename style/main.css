@@ -4,12 +4,13 @@
 @theme {
   --font-serif: "IBM Plex Serif", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
 
-  --color-bg-1:      oklch(0.2  0.03  253);
-  --color-bg-2:      oklch(0.3  0.02  253);
-  --color-fg:        oklch(0.9  0.0   253);
-  --color-fg-dim:    oklch(0.75 0.002 253);
-  --color-fg-dimmer: oklch(0.6  0.003 253);
-  --color-fg-accent: oklch(0.8  0.08  253);
+  --hue: 253;
+  --color-bg-1:      oklch(0.2  0.03  var(--hue));
+  --color-bg-2:      oklch(0.3  0.02  var(--hue));
+  --color-fg:        oklch(0.9  0.0   var(--hue));
+  --color-fg-dim:    oklch(0.75 0.002 var(--hue));
+  --color-fg-dimmer: oklch(0.6  0.003 var(--hue));
+  --color-fg-accent: oklch(0.8  0.08  var(--hue));
   
   /* disable larger breakpoints */
   --breakpoint-lg: initial;
