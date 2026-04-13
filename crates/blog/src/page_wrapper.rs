@@ -83,6 +83,12 @@ pub(crate) fn page_wrapper(
             (children)
           }
           div class="flex-1" {}
+          div class="h-0 border-t border-light-fg-dimmer dark:border-dark-fg-dimmer" {}
+          div class="w-full flex flex-row justify-end" {
+            p class="text-sm text-light-fg-dimmer dark:text-dark-fg-dimmer" {
+              "Thanks for reading."
+            }
+          }
         }
       }
     }
