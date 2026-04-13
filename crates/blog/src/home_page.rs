@@ -2,7 +2,7 @@ use axum::response::IntoResponse;
 use maud::html;
 
 pub const SITE_DESCRIPTION: &str = "Welcome to my space. Please enjoy a \
-                                    select sampling of my thought, lossily \
+                                    select sampling of my thoughts, lossily \
                                     translated into words. My opinions are my \
                                     own, and all content is of human origin.";
 
