@@ -25,6 +25,15 @@
   --breakpoint-2xl: initial;
 }
 
+@utility link {
+  /* color */
+  @apply text-light-accent dark:text-dark-accent;
+  /* decoration */
+  @apply underline;
+  /* animation */
+  @apply hover:decoration-transparent transition-colors duration-150;
+}
+
 @layer base {
   :root {
     /* color-scheme: light dark; */
@@ -72,8 +81,7 @@
     & p { }
 
     & a {
-      @apply text-light-accent dark:text-dark-accent;
-      @apply underline hover:decoration-transparent transition-colors duration-150;
+      @apply link;
     }
 
     & strong {
