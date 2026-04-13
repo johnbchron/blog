@@ -154,11 +154,11 @@
     }
 
     & sup {
-      @apply text-xs align-super;
+      /* @apply text-xs align-super; */
     }
 
     & sub {
-      @apply text-xs align-sub;
+      /* @apply text-xs align-sub; */
     }
   }
 }
