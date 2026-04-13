@@ -1,11 +1,14 @@
-use std::{io::Read, path::PathBuf, sync::Arc};
+use std::{collections::HashMap, io::Read, path::PathBuf, sync::Arc};
 
 use miette::{Context, IntoDiagnostic};
+
+use crate::posts::{Post, load_posts};
 
 #[derive(Debug, Clone)]
 pub(crate) struct AppState {
   pub(crate) static_asset_dir: PathBuf,
   pub(crate) stylesheet:       Arc<str>,
+  pub(crate) posts:            HashMap<Arc<str>, Post>,
 }
 
 impl AppState {
@@ -14,6 +17,13 @@ impl AppState {
       .into_diagnostic()
       .context("`STATIC_ASSET_DIR` env var not populated")?;
     let static_asset_dir = PathBuf::from(static_asset_dir);
+
+    let posts_dir = std::env::var("POSTS_DIR")
+      .map(PathBuf::from)
+      .into_diagnostic()
+      .context("`POSTS_DIR` env var not populated")?;
+
+    let posts = load_posts(&posts_dir);
 
     let stylesheet_path = std::env::var("STYLESHEET_PATH")
       .into_diagnostic()
@@ -34,6 +44,7 @@ impl AppState {
     Ok(AppState {
       static_asset_dir,
       stylesheet: stylesheet_content,
+      posts,
     })
   }
 }

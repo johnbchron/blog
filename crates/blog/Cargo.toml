@@ -5,6 +5,7 @@ version.workspace = true
 edition.workspace = true
 
 [dependencies]
+arborium.workspace = true
 axum.workspace = true
 columbo.workspace = true
 const_base.workspace = true
@@ -13,7 +14,10 @@ css-minify-macro.workspace = true
 http-body-util.workspace = true
 maud.workspace = true
 miette.workspace = true
+pulldown-cmark.workspace = true
+serde.workspace = true
 tokio.workspace = true
+toml.workspace = true
 tower.workspace = true
 tower-http.workspace = true
 tracing.workspace = true

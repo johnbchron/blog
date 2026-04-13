@@ -12,8 +12,8 @@
   --color-dark-fg-dim:     oklch(0.75  0.002 var(--hue));
   --color-dark-fg-dimmer:  oklch(0.6   0.003 var(--hue));
   --color-dark-accent:     oklch(0.8   0.08  var(--hue));
-  --color-light-bg-1:      oklch(0.98  0.01  var(--hue));
-  --color-light-bg-2:      oklch(0.725 0.004 var(--hue));
+  --color-light-bg-1:      oklch(0.98  0.02  var(--hue));
+  --color-light-bg-2:      oklch(0.94  0.004 var(--hue));
   --color-light-fg:        oklch(0.1   0.0   var(--hue));
   --color-light-fg-dim:    oklch(0.25  0.002 var(--hue));
   --color-light-fg-dimmer: oklch(0.4   0.003 var(--hue));
@@ -73,8 +73,7 @@
 
     & a {
       @apply text-light-accent dark:text-dark-accent;
-      @apply underline decoration-[1.5px];
-      @apply hover:decoration-transparent transition-colors duration-150;
+      @apply underline hover:decoration-transparent transition-colors duration-150;
     }
 
     & strong {
@@ -102,14 +101,15 @@
     }
 
     & code {
-      @apply px-1.5 py-0.5 rounded text-sm font-mono bg-light-bg-2 dark:bg-dark-bg-2;
+      @apply px-1.5 pb-0.5 pt-0.75 rounded text-sm font-mono;
+      @apply border border-light-fg-dimmer/50 dark:border-dark-fg-dimmer/50 bg-light-bg-2 dark:bg-dark-bg-2;
     }
 
     & pre {
       @apply p-4 overflow-x-auto text-sm bg-light-bg-2 dark:bg-dark-bg-2 rounded-sm my-2;
 
       & code {
-        @apply bg-transparent text-inherit p-0 rounded-none;
+        @apply bg-transparent border-0 text-inherit p-0 rounded-none;
       }
     }
 
@@ -122,7 +122,7 @@
     }
 
     & thead {
-      @apply bg-light-bg-2 dark:bg-dark-bg-2/50;
+      @apply bg-light-bg-2/50 dark:bg-dark-bg-2/50;
     }
 
     & th {
@@ -134,7 +134,7 @@
     }
 
     & tr:nth-child(even) td {
-      @apply bg-light-bg-2 dark:bg-dark-bg-2/25;
+      @apply bg-light-bg-2/25 dark:bg-dark-bg-2/25;
     }
 
     & img {

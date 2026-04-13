@@ -30,6 +30,7 @@
         fileset = lib.fileset.unions [
           (craneLib.fileset.commonCargoSources unfilteredRoot)
           ./crates/blog/src/test_markup.html
+          (lib.fileset.maybeMissing ./posts)
           (lib.fileset.maybeMissing ./public)
           (lib.fileset.maybeMissing ./style)
         ];
@@ -71,9 +72,11 @@
           cp target/release/${server-args.pname} $out/bin/${server-args.pname}
           cp ${css} $out/bin/styles.css
           cp -r public $out/bin/public
+          cp -r posts $out/bin/posts
 
           wrapProgram $out/bin/${server-args.pname} \
             --set-default STATIC_ASSET_DIR $out/bin/public \
+            --set-default POSTS_DIR $out/bin/posts \
             --set-default STYLESHEET_PATH $out/bin/styles.css \
         '';
       });

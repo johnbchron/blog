@@ -56,6 +56,11 @@ pub(crate) fn page_wrapper(
         // main stylesheet
         style { (PreEscaped(stylesheet)) }
 
+        // arborium highlighting
+        link rel="stylesheet" href="/dist/base-arborium.css";
+        link rel="stylesheet" href="/dist/cattpuccin-mocha.css";
+        link rel="stylesheet" href="/dist/cattpuccin-latte.css";
+
         // font stylesheets
         style { (PreEscaped(include_css!("../../style/fonts/ibm_plex_serif.css"))) }
 
@@ -70,6 +75,8 @@ pub(crate) fn page_wrapper(
             a href="/" class="link" { "Home" }
             "•"
             a href="/about" class="link" { "About" }
+            "•"
+            a href="/posts" class="link" { "Posts" }
           }
           div class="markdown" {
             p class="title" { (page_title) }

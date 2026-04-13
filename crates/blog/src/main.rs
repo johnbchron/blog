@@ -2,6 +2,8 @@ mod app_state;
 mod ctx;
 mod home_page;
 mod page_wrapper;
+mod post_page;
+mod posts;
 mod setup_tracing;
 mod signals;
 mod test_page;
@@ -77,5 +79,7 @@ async fn fallback(ResponseSeed(ctx, resp): ResponseSeed) -> impl IntoResponse {
 fn router() -> Router<AppState> {
   Router::new()
     .route("/", get(self::home_page::home_page))
+    .route("/posts", get(self::post_page::all_posts_page))
+    .route("/posts/{slug}", get(self::post_page::post_page))
     .route("/test", get(self::test_page::test_page))
 }
