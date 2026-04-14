@@ -14,6 +14,12 @@ pub(crate) async fn home_page(
   const TITLE: &str = "John Lewis";
   let page = html! {
     p { (SITE_DESCRIPTION) }
+
+    p {
+      "View my blog posts "
+      a href="/posts" { "here" }
+      "."
+    }
   };
 
   let doc = page_wrapper(TITLE, page, ctx);
