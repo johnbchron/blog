@@ -1,6 +1,7 @@
 mod app_state;
 mod ctx;
 mod home_page;
+mod markdown;
 mod page_wrapper;
 mod post_page;
 mod posts;

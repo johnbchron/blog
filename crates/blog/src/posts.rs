@@ -1,11 +1,8 @@
-mod highlighter;
-
 use std::{collections::HashMap, path::PathBuf, sync::Arc};
 
-use pulldown_cmark::{Options, Parser, html};
 use serde::Deserialize;
 
-use self::highlighter::Highlighter;
+use crate::markdown::Markdown;
 
 #[derive(Debug, Clone)]
 pub(crate) struct Post {
@@ -53,30 +50,12 @@ impl Post {
     let fm: Frontmatter = toml::from_str(fm.trim())?;
     let body = body.strip_prefix('\n').unwrap_or(body);
 
-    let mut html_out = String::new();
-    let mut opts = Options::empty();
-    opts.insert(Options::ENABLE_TABLES);
-    opts.insert(Options::ENABLE_FOOTNOTES);
-    opts.insert(Options::ENABLE_STRIKETHROUGH);
-    opts.insert(Options::ENABLE_TASKLISTS);
-    // opts.insert(Options::ENABLE_SMART_PUNCTUATION);
-    opts.insert(Options::ENABLE_STRIKETHROUGH);
-    opts.insert(Options::ENABLE_HEADING_ATTRIBUTES);
-    opts.insert(Options::ENABLE_GFM);
-    opts.insert(Options::ENABLE_SUPERSCRIPT);
-    opts.insert(Options::ENABLE_SUBSCRIPT);
-
-    let parser = Parser::new_ext(body, opts);
-    let events = parser.collect::<Vec<_>>();
-    let highlighted_events =
-      Highlighter::highlight(events.into_iter()).expect("failed to highlight");
-
-    html::push_html(&mut html_out, highlighted_events.into_iter());
+    let html = Markdown::new(body).render_to_html();
 
     Ok(Post {
       title: fm.title.into(),
       date:  fm.date.into(),
-      body:  html_out.into(),
+      body:  html.into(),
     })
   }
 }
