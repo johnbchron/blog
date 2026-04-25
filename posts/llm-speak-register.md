@@ -3,7 +3,7 @@ title = "LLM-Speak as a Coping Mechanism"
 date = "2026-04-14"
 +++
 
-I've had this reoccurring thought that the characteristic literary register of modern LLMs is a sort of coping mechanism for the LLM. Speaking in short fragments is simpler and easier than constructing fully-breaded sentences. I have a few suspicions as to what benefits this yields for an LLM.
+I've had this reoccurring thought that the characteristic literary register of modern LLMs (read: LLM-speak) is a sort of coping mechanism for the LLM. Speaking in short fragments is simpler and easier than constructing fully-breaded sentences. I have a few suspicions as to what benefits this yields for an LLM.
 
 Firstly, I believe that especially in longer, more deliberative writing, producing simpler sentences may allow an LLM to recover its own context better. Consider token generation that involves multiple paragraphs, in which each paragraph has a distinct goal. I think LLM-speak allows the LLM to have a better sense of what it's already written, i.e. simpler writing is easier to build on. The same applies to prolific use of header-level text, bolded titles at the beginnings of bullet points, emojis, and other consistent overuse of Markdown features. I think these help the LLM remember both what it's actually talking about and emphasizing, at the token level.
 
