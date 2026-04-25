@@ -22,7 +22,9 @@ pub(crate) async fn post_page(
   let date = &post.date;
   let body_html = PreEscaped(&*post.body);
   let page = html! {
-      p class="text-sm text-light-fg-dim dark:text-dark-fg-dim" { (date) }
+      small class="text-sm text-light-fg-dim dark:text-dark-fg-dim" {
+        time { (date) }
+      }
       (body_html)
   };
 

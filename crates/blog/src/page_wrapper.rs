@@ -79,12 +79,12 @@ pub(crate) fn page_wrapper(
             a href="/posts" class="link" { "Posts" }
           }
           div class="markdown" {
-            p class="title" { (page_title) }
+            h1 class="title" { (page_title) }
             (children)
           }
           div class="flex-1" {}
           div class="h-0 border-t border-light-fg-dimmer dark:border-dark-fg-dimmer" {}
-          div class="w-full flex flex-row justify-end" {
+          footer class="w-full flex flex-row justify-end" {
             p class="text-sm text-light-fg-dimmer dark:text-dark-fg-dimmer" {
               "Thank you for reading."
             }
