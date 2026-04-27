@@ -71,12 +71,26 @@ version = "2.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "db65328fda517795f476b9d1b0794199cce180077e204629946a0705f0093093"
 dependencies = [
+ "arborium-bash",
  "arborium-highlight",
+ "arborium-html",
  "arborium-markdown",
  "arborium-rust",
  "arborium-theme",
+ "arborium-toml",
  "arborium-tree-sitter",
  "dlmalloc",
+]
+
+[[package]]
+name = "arborium-bash"
+version = "2.16.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5b29627168ad951fccf683bac9b66674455b279eee7c03b61584207c9165aa6f"
+dependencies = [
+ "arborium-sysroot",
+ "cc",
+ "tree-sitter-language",
 ]
 
 [[package]]
