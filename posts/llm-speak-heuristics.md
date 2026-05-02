@@ -19,7 +19,15 @@ automatically isolated. This is not meant to be an exhaustive list, but rather
 only the ones which I think may be novel. I likely will update this post with
 more as they come to me.
 
+I'm even considering writing a browser extension to use XPath and regex to
+evaluate and call these out on pages I visit.
+
 ---
 
-- The exact phrase "the pattern is clear: \<conclusion\>", especially if
-\<conclusion\> is **bolded**.
+- The exact phrase "the pattern is clear: `conclusion`", especially if
+`conclusion` is **bolded**:
+  > The pattern is clear: **this prose is slop**.
+- Any use of a bolded term and a colon as a header inline in a paragraph or
+line item:
+  > **Bottom line:** using a couple of words as an inline paragraph header is
+inhuman and a dead-giveaway.
