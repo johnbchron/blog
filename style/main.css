@@ -109,7 +109,7 @@
     }
 
     & code {
-      @apply px-1.5 pb-0.5 pt-0.75 rounded text-sm font-mono;
+      @apply p-0.75 pb-0.5 rounded text-sm font-mono;
       @apply border border-light-fg-dimmer/50 dark:border-dark-fg-dimmer/50 bg-light-bg-2 dark:bg-dark-bg-2;
     }
 
