@@ -16,8 +16,8 @@ pub(crate) async fn home_page(
     p { (SITE_DESCRIPTION) }
 
     p {
-      "View my blog posts "
-      a href="/posts" { "here" }
+      "View "
+      a href="/posts" { "my blog posts" }
       "."
     }
   };
