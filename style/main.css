@@ -105,7 +105,7 @@
     }
 
     & blockquote {
-      @apply border-l-4 border-light-fg-dimmer dark:border-dark-fg-dimmer pl-4 italic text-light-fg-dim dark:text-dark-fg-dim;
+      @apply border-l-4 border-light-fg-dimmer dark:border-dark-fg-dimmer pl-4 text-light-fg-dim dark:text-dark-fg-dim;
     }
 
     & code {
