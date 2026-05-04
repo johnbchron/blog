@@ -20,7 +20,7 @@ use miette::{Context, IntoDiagnostic};
 use tower::ServiceBuilder;
 use tower_http::{
   ServiceBuilderExt, compression::CompressionLayer,
-  normalize_path::NormalizePathLayer, services::ServeDir,
+  normalize_path::NormalizePathLayer, services::ServeDir, trace::TraceLayer,
 };
 use tracing::info;
 
@@ -52,6 +52,8 @@ async fn main() -> miette::Result<()> {
     // unify types
     .map_request_body(axum::body::Body::new)
     .map_response_body(axum::body::Body::new)
+    // tracing
+    .layer(TraceLayer::new_for_http())
     // normalize paths and routing
     .layer(NormalizePathLayer::trim_trailing_slash())
     .layer(CompressionLayer::new())
@@ -63,10 +65,11 @@ async fn main() -> miette::Result<()> {
     .await
     .into_diagnostic()
     .context(format!("failed to bind listener to `{addr}`"))?;
-  let addr = listener.local_addr().into_diagnostic().with_context(|| {
-    format!("failed to read local_addr of listener (requested {addr:?})")
-  })?;
-  tracing::info!("bound to http://{addr}");
+  let real_addr =
+    listener.local_addr().into_diagnostic().with_context(|| {
+      format!("failed to read local_addr of listener (requested {addr:?})")
+    })?;
+  tracing::info!("bound to http://{real_addr}");
 
   axum::serve(listener, service)
     .with_graceful_shutdown(shutdown_signal())
