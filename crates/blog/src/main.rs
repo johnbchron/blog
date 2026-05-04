@@ -10,6 +10,8 @@ mod setup_tracing;
 mod signals;
 mod test_page;
 
+use std::env;
+
 use axum::{
   Router, ServiceExt, handler::Handler, response::IntoResponse, routing::get,
 };
@@ -20,16 +22,23 @@ use tower_http::{
   ServiceBuilderExt, compression::CompressionLayer,
   normalize_path::NormalizePathLayer, services::ServeDir,
 };
+use tracing::info;
 
 use self::{
   app_state::AppState, ctx::ResponseSeed, page_wrapper::page_wrapper,
   signals::shutdown_signal,
 };
 
+const HOST_ENV_VAR: &str = "HOST";
+const PORT_ENV_VAR: &str = "PORT";
+const DEFAULT_HOST: &str = "[::]";
+const DEFAULT_PORT: u16 = 3000;
+
 #[tokio::main]
 async fn main() -> miette::Result<()> {
   self::setup_tracing::setup_tracing().context("failed to setup tracing")?;
 
+  let addr = determine_bind_address();
   let app_state = AppState::build()
     .await
     .context("failed to build app state")?;
@@ -50,7 +59,6 @@ async fn main() -> miette::Result<()> {
     .service(router)
     .into_make_service();
 
-  let addr = "[::]:3000";
   let listener = tokio::net::TcpListener::bind(&addr)
     .await
     .into_diagnostic()
@@ -85,4 +93,16 @@ fn router() -> Router<AppState> {
     .route("/posts", get(self::post_page::all_posts_page))
     .route("/posts/{slug}", get(self::post_page::post_page))
     .route("/test", get(self::test_page::test_page))
+}
+
+fn determine_bind_address() -> String {
+  let host = env::var(HOST_ENV_VAR).unwrap_or_else(|_| {
+    info!("host not configured (var {HOST_ENV_VAR}), using \"{DEFAULT_HOST}\"");
+    DEFAULT_HOST.to_owned()
+  });
+  let port = env::var(PORT_ENV_VAR).unwrap_or_else(|_| {
+    info!("port not configured (var {PORT_ENV_VAR}), using \"{DEFAULT_PORT}\"");
+    DEFAULT_PORT.to_string()
+  });
+  format!("{host}:{port}")
 }
