@@ -5,9 +5,13 @@ use std::{
   sync::Arc,
 };
 
+use atom_syndication::Feed;
 use miette::{Context, IntoDiagnostic};
 
-use crate::posts::{Post, load_posts};
+use crate::{
+  feed::build_feed,
+  posts::{Post, load_posts},
+};
 
 #[derive(Clone, Debug)]
 pub struct AppState(Arc<InnerAppState>);
@@ -17,6 +21,7 @@ struct InnerAppState {
   static_asset_dir: PathBuf,
   stylesheet:       String,
   posts:            HashMap<String, Post>,
+  feed_str:         String,
 }
 
 impl AppState {
@@ -25,13 +30,6 @@ impl AppState {
       .into_diagnostic()
       .context("`STATIC_ASSET_DIR` env var not populated")?;
     let static_asset_dir = PathBuf::from(static_asset_dir);
-
-    let posts_dir = std::env::var("POSTS_DIR")
-      .map(PathBuf::from)
-      .into_diagnostic()
-      .context("`POSTS_DIR` env var not populated")?;
-
-    let posts = load_posts(&posts_dir);
 
     let stylesheet_path = std::env::var("STYLESHEET_PATH")
       .into_diagnostic()
@@ -48,10 +46,20 @@ impl AppState {
       }
     };
 
+    let posts_dir = std::env::var("POSTS_DIR")
+      .map(PathBuf::from)
+      .into_diagnostic()
+      .context("`POSTS_DIR` env var not populated")?;
+
+    let posts = load_posts(&posts_dir);
+
+    let feed = build_feed(posts.iter());
+
     Ok(Self(Arc::new(InnerAppState {
       static_asset_dir,
       stylesheet: stylesheet_content,
       posts,
+      feed_str: feed.to_string(),
     })))
   }
 
@@ -64,4 +72,6 @@ impl AppState {
   pub fn iter_posts(&self) -> impl Iterator<Item = (&String, &Post)> {
     self.0.posts.iter()
   }
+
+  pub fn feed_str(&self) -> &str { &self.0.feed_str }
 }

@@ -1,6 +1,7 @@
 mod about_page;
 mod app_state;
 mod ctx;
+mod feed;
 mod home_page;
 mod markdown;
 mod page_wrapper;
@@ -95,6 +96,7 @@ fn router() -> Router<AppState> {
     .route("/about", get(self::about_page::about_page))
     .route("/posts", get(self::post_page::all_posts_page))
     .route("/posts/{slug}", get(self::post_page::post_page))
+    .route("/atom.xml", get(self::feed::feed_xml))
     .route("/test", get(self::test_page::test_page))
 }
 

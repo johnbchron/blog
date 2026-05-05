@@ -6,6 +6,7 @@ edition.workspace = true
 
 [dependencies]
 arborium.workspace = true
+atom_syndication.workspace = true
 axum.workspace = true
 chrono.workspace = true
 columbo.workspace = true
