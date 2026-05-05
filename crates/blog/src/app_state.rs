@@ -1,4 +1,8 @@
-use std::{collections::HashMap, io::Read, path::PathBuf, sync::Arc};
+use std::{
+  collections::HashMap,
+  io::Read,
+  path::{Path, PathBuf},
+};
 
 use miette::{Context, IntoDiagnostic};
 
@@ -6,9 +10,9 @@ use crate::posts::{Post, load_posts};
 
 #[derive(Debug, Clone)]
 pub(crate) struct AppState {
-  pub(crate) static_asset_dir: PathBuf,
-  pub(crate) stylesheet:       Arc<str>,
-  pub(crate) posts:            HashMap<Arc<str>, Post>,
+  static_asset_dir: PathBuf,
+  stylesheet:       String,
+  posts:            HashMap<String, Post>,
 }
 
 impl AppState {
@@ -39,12 +43,21 @@ impl AppState {
         tracing::warn!("failed to open stylesheet file: {e}");
       }
     };
-    let stylesheet_content = Arc::<str>::from(stylesheet_content);
 
     Ok(AppState {
       static_asset_dir,
       stylesheet: stylesheet_content,
       posts,
     })
+  }
+
+  pub fn static_asset_dir(&self) -> &Path { &self.static_asset_dir }
+
+  pub fn stylesheet(&self) -> &str { &self.stylesheet }
+
+  pub fn get_post(&self, slug: &str) -> Option<&Post> { self.posts.get(slug) }
+
+  pub fn iter_posts(&self) -> impl Iterator<Item = (&String, &Post)> {
+    self.posts.iter()
   }
 }

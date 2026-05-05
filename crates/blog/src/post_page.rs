@@ -14,10 +14,7 @@ pub(crate) async fn post_page(
   State(state): State<AppState>,
   ResponseSeed(ctx, resp): ResponseSeed,
 ) -> Result<impl IntoResponse, StatusCode> {
-  let post = state
-    .posts
-    .get(slug.as_str())
-    .ok_or(StatusCode::NOT_FOUND)?;
+  let post = state.get_post(slug.as_str()).ok_or(StatusCode::NOT_FOUND)?;
 
   let date = &post.date;
   let body_html = PreEscaped(&*post.body);
@@ -40,8 +37,7 @@ pub(crate) async fn all_posts_page(
   const DATE_CLASS: &str = "text-light-fg-dim dark:text-dark-fg-dim";
 
   let mut posts = state
-    .posts
-    .iter()
+    .iter_posts()
     .map(|(t, p)| (t, (&p.title, &p.date)))
     .collect::<Vec<_>>();
   // sort first descending by date, and then reverse the list

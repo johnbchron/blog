@@ -60,7 +60,7 @@ impl Post {
   }
 }
 
-pub(crate) fn load_posts(dir: &PathBuf) -> HashMap<Arc<str>, Post> {
+pub(crate) fn load_posts(dir: &PathBuf) -> HashMap<String, Post> {
   let mut posts = HashMap::new();
   let Ok(entries) = std::fs::read_dir(dir) else {
     tracing::warn!("posts directory not found: {}", dir.display());
@@ -80,7 +80,7 @@ pub(crate) fn load_posts(dir: &PathBuf) -> HashMap<Arc<str>, Post> {
         Ok(content) => match Post::from_markdown(&content) {
           Ok(post) => {
             tracing::info!("loaded post: {slug}");
-            posts.insert(slug.into(), post);
+            posts.insert(slug, post);
           }
           Err(e) => {
             tracing::warn!("skipping {}: {e}", path.display());

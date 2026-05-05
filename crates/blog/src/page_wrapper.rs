@@ -19,7 +19,7 @@ pub(crate) fn page_wrapper(
 ) -> Markup {
   const HEAD_TITLE_PREFIX: &str = "John Lewis";
 
-  let stylesheet = &ctx.state().stylesheet;
+  let stylesheet = ctx.state().stylesheet();
 
   let preload_fonts = PRELOAD_FONT_PATHS.iter().map(|p| html! {
     link rel="preload" href=(p) as="font" type="font/woff2" crossorigin="anonymous";

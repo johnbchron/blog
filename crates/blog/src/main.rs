@@ -44,7 +44,7 @@ async fn main() -> miette::Result<()> {
     .context("failed to build app state")?;
 
   let router = router().with_state(app_state.clone()).fallback_service(
-    ServeDir::new(&app_state.static_asset_dir)
+    ServeDir::new(app_state.static_asset_dir())
       .not_found_service(fallback.with_state(app_state.clone())),
   );
 
