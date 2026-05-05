@@ -52,7 +52,7 @@
 
   /* markdown formatting */
   .markdown {
-    @apply flex flex-col gap-4 text-base/[1.42] text-light-fg dark:text-dark-fg max-w-[72ch];
+    @apply flex flex-col gap-4 text-base/[1.5] text-light-fg dark:text-dark-fg max-w-[72ch];
 
     & h1 {
       @apply text-3xl font-medium tracking-tight mt-4;
