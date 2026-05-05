@@ -15,6 +15,7 @@ arborium = { version = "2.16.0", features = [
   "lang-toml",
 ] }
 axum = { version = "0.8", features = [ "http2", "macros" ] }
+chrono = { version = "0.4", features = [ "serde" ] }
 columbo = { version = "0.2" }
 const_base = "0.2"
 const_format = "0.2"

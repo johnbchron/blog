@@ -1,5 +1,6 @@
 use std::{collections::HashMap, path::PathBuf, sync::Arc};
 
+use chrono::NaiveDate;
 use serde::Deserialize;
 
 use crate::markdown::Markdown;
@@ -7,14 +8,14 @@ use crate::markdown::Markdown;
 #[derive(Debug, Clone)]
 pub(crate) struct Post {
   pub(crate) title: Arc<str>,
-  pub(crate) date:  Arc<str>,
+  pub(crate) date:  NaiveDate,
   pub(crate) body:  Arc<str>,
 }
 
 #[derive(Debug, Deserialize)]
 struct Frontmatter {
   title: String,
-  date:  String,
+  date:  NaiveDate,
 }
 
 #[derive(Debug)]
@@ -54,7 +55,7 @@ impl Post {
 
     Ok(Post {
       title: fm.title.into(),
-      date:  fm.date.into(),
+      date:  fm.date,
       body:  html.into(),
     })
   }
@@ -79,7 +80,7 @@ pub(crate) fn load_posts(dir: &PathBuf) -> HashMap<String, Post> {
       match std::fs::read_to_string(&path) {
         Ok(content) => match Post::from_markdown(&content) {
           Ok(post) => {
-            tracing::info!("loaded post: {slug}");
+            tracing::info!(slug, %post.date, "loaded post");
             posts.insert(slug, post);
           }
           Err(e) => {

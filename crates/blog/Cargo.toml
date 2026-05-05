@@ -7,6 +7,7 @@ edition.workspace = true
 [dependencies]
 arborium.workspace = true
 axum.workspace = true
+chrono.workspace = true
 columbo.workspace = true
 const_base.workspace = true
 const_format.workspace = true

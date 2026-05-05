@@ -20,7 +20,7 @@ pub(crate) async fn post_page(
   let body_html = PreEscaped(&*post.body);
   let page = html! {
       small class="text-sm text-light-fg-dim dark:text-dark-fg-dim" {
-        time { (date) }
+        time datetime=(date) { (date) }
       }
       (body_html)
   };
@@ -51,7 +51,7 @@ pub(crate) async fn all_posts_page(
           p {
             a class=(LINK_CLASS) href=(format!("/posts/{slug}")) { (title) }
             " – "
-            span class=(DATE_CLASS) { (date) }
+            time class=(DATE_CLASS) datetime=(date) { (date) }
           }
         }
       }
