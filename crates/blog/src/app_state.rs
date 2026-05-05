@@ -2,14 +2,18 @@ use std::{
   collections::HashMap,
   io::Read,
   path::{Path, PathBuf},
+  sync::Arc,
 };
 
 use miette::{Context, IntoDiagnostic};
 
 use crate::posts::{Post, load_posts};
 
-#[derive(Debug, Clone)]
-pub(crate) struct AppState {
+#[derive(Clone, Debug)]
+pub struct AppState(Arc<InnerAppState>);
+
+#[derive(Debug)]
+struct InnerAppState {
   static_asset_dir: PathBuf,
   stylesheet:       String,
   posts:            HashMap<String, Post>,
@@ -44,20 +48,20 @@ impl AppState {
       }
     };
 
-    Ok(AppState {
+    Ok(Self(Arc::new(InnerAppState {
       static_asset_dir,
       stylesheet: stylesheet_content,
       posts,
-    })
+    })))
   }
 
-  pub fn static_asset_dir(&self) -> &Path { &self.static_asset_dir }
+  pub fn static_asset_dir(&self) -> &Path { &self.0.static_asset_dir }
 
-  pub fn stylesheet(&self) -> &str { &self.stylesheet }
+  pub fn stylesheet(&self) -> &str { &self.0.stylesheet }
 
-  pub fn get_post(&self, slug: &str) -> Option<&Post> { self.posts.get(slug) }
+  pub fn get_post(&self, slug: &str) -> Option<&Post> { self.0.posts.get(slug) }
 
   pub fn iter_posts(&self) -> impl Iterator<Item = (&String, &Post)> {
-    self.posts.iter()
+    self.0.posts.iter()
   }
 }
