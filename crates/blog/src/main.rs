@@ -1,4 +1,5 @@
 mod about_page;
+mod analytics;
 mod app_state;
 mod ctx;
 mod feed;
@@ -11,7 +12,7 @@ mod setup_tracing;
 mod signals;
 mod test_page;
 
-use std::env;
+use std::{env, net::SocketAddr};
 
 use axum::{
   Router, ServiceExt, handler::Handler, response::IntoResponse, routing::get,
@@ -26,12 +27,13 @@ use tower_http::{
 use tracing::info;
 
 use self::{
-  app_state::AppState, ctx::ResponseSeed, page_wrapper::page_wrapper,
-  signals::shutdown_signal,
+  analytics::AnalyticsLayer, app_state::AppState, ctx::ResponseSeed,
+  page_wrapper::page_wrapper, signals::shutdown_signal,
 };
 
 const HOST_ENV_VAR: &str = "HOST";
 const PORT_ENV_VAR: &str = "PORT";
+const ANALYTICS_DB_URL_ENV_VAR: &str = "ANALYTICS_DB_URL";
 const DEFAULT_HOST: &str = "[::]";
 const DEFAULT_PORT: u16 = 3000;
 
@@ -49,6 +51,14 @@ async fn main() -> miette::Result<()> {
       .not_found_service(fallback.with_state(app_state.clone())),
   );
 
+  let analytics_db_url =
+    env::var(ANALYTICS_DB_URL_ENV_VAR)
+      .into_diagnostic()
+      .context(format!("failed to read {ANALYTICS_DB_URL_ENV_VAR} env var"))?;
+  let analytics_layer = AnalyticsLayer::build(&analytics_db_url, 2048)
+    .await
+    .context("failed to build analytics layer")?;
+
   let service = ServiceBuilder::new()
     // unify types
     .map_request_body(axum::body::Body::new)
@@ -58,9 +68,11 @@ async fn main() -> miette::Result<()> {
     // normalize paths and routing
     .layer(NormalizePathLayer::trim_trailing_slash())
     .layer(CompressionLayer::new())
+    // analytics
+    .layer(analytics_layer)
     // turn into a service
     .service(router)
-    .into_make_service();
+    .into_make_service_with_connect_info::<SocketAddr>();
 
   let listener = tokio::net::TcpListener::bind(&addr)
     .await

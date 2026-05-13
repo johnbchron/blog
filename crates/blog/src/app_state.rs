@@ -5,7 +5,6 @@ use std::{
   sync::Arc,
 };
 
-use atom_syndication::Feed;
 use miette::{Context, IntoDiagnostic};
 
 use crate::{
