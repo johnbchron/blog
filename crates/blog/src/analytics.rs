@@ -82,7 +82,9 @@ impl AnalyticsLayer {
       .connect(db_url)
       .await
       .into_diagnostic()
-      .context("failed to connect to analytics db file")?;
+      .with_context(|| {
+        format!("failed to connect to analytics db file: {db_url:?}")
+      })?;
 
     sqlx::raw_sql(INIT_SQL)
       .execute(&pool)
