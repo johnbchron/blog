@@ -22,7 +22,7 @@ CREATE TABLE IF NOT EXISTS page_views (
     path            TEXT    NOT NULL,
     query           TEXT,
     status          INTEGER NOT NULL,
-    latency_ms      INTEGER NOT NULL,
+    latency_micros  INTEGER NOT NULL,
     response_size   INTEGER,
     user_agent      TEXT,
     referer         TEXT,
@@ -46,7 +46,7 @@ struct PageView {
   path:            String,
   query:           Option<String>,
   status:          u16,
-  latency_ms:      u64,
+  latency_micros:  u64,
   response_size:   Option<u64>,
   user_agent:      Option<String>,
   referer:         Option<String>,
@@ -165,7 +165,7 @@ where
     Box::pin(async move {
       let start = Instant::now();
       let resp = inner.call(req).await?;
-      let latency_ms = start.elapsed().as_millis() as u64;
+      let latency_micros = start.elapsed().as_micros() as u64;
 
       let response_size = resp
         .headers()
@@ -185,7 +185,7 @@ where
         path,
         query,
         status: resp.status().as_u16(),
-        latency_ms,
+        latency_micros,
         response_size,
         user_agent,
         referer,
@@ -271,7 +271,7 @@ async fn flush(
   for ev in batch {
     sqlx::query(
       r#"INSERT INTO page_views
-                   (ts, method, path, query, status, latency_ms, response_size,
+                   (ts, method, path, query, status, latency_micros, response_size,
                     user_agent, referer, remote_addr, country,
                     accept_language, content_type, is_bot, ray_id)
                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"#,
@@ -281,7 +281,7 @@ async fn flush(
     .bind(&ev.path)
     .bind(&ev.query)
     .bind(ev.status as i64)
-    .bind(ev.latency_ms as i64)
+    .bind(ev.latency_micros as i64)
     .bind(ev.response_size.map(|s| s as i64))
     .bind(&ev.user_agent)
     .bind(&ev.referer)
