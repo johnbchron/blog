@@ -90,17 +90,20 @@
           WorkingDir = "${server}/bin";
         };
       };
-    in {
-      devShells.default = pkgs.devshell.mkShell {
-        packages = [
-          (toolchain_fn pkgs)
-          pkgs.gcc
-          pkgs.tailwindcss_4
-          pkgs.bacon
-          pkgs.flyctl
-        ];
-        motd = "\n  Welcome to the {2}${server-args.pname}{reset} shell.\n";
+
+      devShellPkgs = with pkgs; [
+        (toolchain_fn pkgs) gcc tailwindcss_4 bacon flyctl
+      ];
+      linuxDevShell = pkgs.devshell.mkShell {
+        packages = devShellPkgs;
       };
+      darwinDevShell = pkgs.mkShell {
+        nativeBuildInputs = devShellPkgs ++ [ pkgs.libiconv ];
+      };
+    in {
+      devShells.default = if pkgs.stdenv.isDarwin
+        then darwinDevShell
+        else linuxDevShell;
       packages = {
         inherit server server-container;
         default = server;
