@@ -18,7 +18,7 @@ pub(crate) async fn about_page(
     hr;
 
     p {
-      "All the writing on this blog is strictly of human origin. I will not publish AI-generated content I believe it generally exacerbates the effect of "
+      "All the writing on this blog is strictly of human origin. I will not publish AI-generated content because I believe it generally exacerbates the effect of "
       a href="https://en.wikipedia.org/wiki/Brandolini's_law" { "Brandolini's law" }
       ", and I generally don't like reading it myself."
     }
