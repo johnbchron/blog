@@ -91,12 +91,24 @@
         };
       };
 
+      tailwind-command = {
+        help = "runs tailwind in watch mode";
+        name = "tailwind-watch";
+        command = ''
+          ${pkgs.tailwindcss_4}/bin/tailwindcss \
+            --input $PRJ_ROOT/style/main.css \
+            --output $STYLESHEET_PATH \
+            --watch
+        '';
+      };
+
       devShellPkgs = with pkgs; [
         (toolchain_fn pkgs) gcc tailwindcss_4 bacon flyctl
       ];
       linuxDevShell = pkgs.devshell.mkShell {
         packages = devShellPkgs;
         motd = "\n  Welcome to the {2}$(basename $PRJ_ROOT){reset} shell.\n";
+        commands = [ tailwind-command ];
       };
       darwinDevShell = pkgs.mkShell {
         nativeBuildInputs = devShellPkgs ++ [ pkgs.libiconv ];
