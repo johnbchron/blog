@@ -6,13 +6,13 @@
 
   --hue: 30;
 
-  --color-dark-bg-1:       oklch(0.2   0.01  var(--hue));
+  --color-dark-bg-1:       oklch(0.2   0.006 var(--hue));
   --color-dark-bg-2:       oklch(0.275 0.004 var(--hue));
   --color-dark-fg:         oklch(0.9   0.0   var(--hue));
   --color-dark-fg-dim:     oklch(0.75  0.002 var(--hue));
   --color-dark-fg-dimmer:  oklch(0.6   0.003 var(--hue));
   --color-dark-accent:     oklch(0.8   0.08  var(--hue));
-  --color-light-bg-1:      oklch(0.98  0.02  var(--hue));
+  --color-light-bg-1:      oklch(0.98  0.015 var(--hue));
   --color-light-bg-2:      oklch(0.94  0.004 var(--hue));
   --color-light-fg:        oklch(0.1   0.0   var(--hue));
   --color-light-fg-dim:    oklch(0.25  0.002 var(--hue));
