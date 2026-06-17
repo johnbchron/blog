@@ -96,6 +96,7 @@
       ];
       linuxDevShell = pkgs.devshell.mkShell {
         packages = devShellPkgs;
+        motd = "\n  Welcome to the {2}$(basename $PRJ_ROOT){reset} shell.\n";
       };
       darwinDevShell = pkgs.mkShell {
         nativeBuildInputs = devShellPkgs ++ [ pkgs.libiconv ];
