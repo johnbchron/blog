@@ -24,10 +24,22 @@ evaluate and call these out on pages I visit.
 
 ---
 
-- The exact phrase "the pattern is clear: `conclusion`", especially if
-`conclusion` is **bolded**:
+- The sentence "the pattern is clear: `conclusion`", especially if `conclusion`
+is **bolded**. Variations include "the pattern is everywhere", "here's the
+pattern: `conclusion`", etc.
   > The pattern is clear: **this prose is slop**.
 - Any use of a bolded term and a colon as a header inline in a paragraph or
 line item:
   > **Bottom line:** using a couple of words as an inline paragraph header is
 inhuman and a dead-giveaway.
+- Three short, "punchy" (yuck) sentences in sequence that semantically overlap.
+  > This is a solved problem. It has been solved since 2019. Most CLIs still
+have not caught up. [\[ref\]][1]
+- Where/what/why explicative headings:
+  > What the Problem Is
+
+  > Why You've Never Fixed It
+
+  > Where It Happens
+
+[1]: (https://www.abgeo.dev/blog/cli-authentication-the-right-way/)
