@@ -33,7 +33,6 @@ pub(crate) async fn all_posts_page(
   State(state): State<AppState>,
   ResponseSeed(ctx, resp): ResponseSeed,
 ) -> impl IntoResponse {
-  const LINK_CLASS: &str = "link text-light-accent dark:text-dark-accent";
   const DATE_CLASS: &str = "text-light-fg-dim dark:text-dark-fg-dim";
 
   let mut posts = state
@@ -49,7 +48,7 @@ pub(crate) async fn all_posts_page(
       @for (slug, (title, date)) in posts {
         li {
           p {
-            a class=(LINK_CLASS) href=(format!("/posts/{slug}")) { (title) }
+            a class="link" href=(format!("/posts/{slug}")) { (title) }
             " – "
             time class=(DATE_CLASS) datetime=(date) { (date) }
           }
