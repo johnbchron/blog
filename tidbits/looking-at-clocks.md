@@ -9,7 +9,7 @@ always present, and I knew how to read them, but I preferred digital clocks.
 It takes me about 10 seconds to read an analog clock, whether at full precision
 or just to get a sense of the time.
 
-Sometimes however, if an analog clock is in view, even without me trying or
+Sometimes however, if an analog clock is in view, without me trying or
 thinking about it, a thought will appear somewhere on the desk of my mind which
 reads, "It's 9:42".
 
