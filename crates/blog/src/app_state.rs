@@ -20,6 +20,7 @@ struct InnerAppState {
   static_asset_dir: PathBuf,
   stylesheet:       String,
   posts:            HashMap<String, Post>,
+  tidbits:          HashMap<String, Post>,
   feed_str:         String,
 }
 
@@ -52,12 +53,20 @@ impl AppState {
 
     let posts = load_posts(&posts_dir);
 
+    let tidbits_dir = std::env::var("TIDBITS_DIR")
+      .map(PathBuf::from)
+      .into_diagnostic()
+      .context("`TIDBITS_DIR` env var not populated")?;
+
+    let tidbits = load_posts(&tidbits_dir);
+
     let feed = build_feed(posts.iter());
 
     Ok(Self(Arc::new(InnerAppState {
       static_asset_dir,
       stylesheet: stylesheet_content,
       posts,
+      tidbits,
       feed_str: feed.to_string(),
     })))
   }
@@ -68,8 +77,16 @@ impl AppState {
 
   pub fn get_post(&self, slug: &str) -> Option<&Post> { self.0.posts.get(slug) }
 
+  pub fn get_tidbit(&self, slug: &str) -> Option<&Post> {
+    self.0.tidbits.get(slug)
+  }
+
   pub fn iter_posts(&self) -> impl Iterator<Item = (&String, &Post)> {
     self.0.posts.iter()
+  }
+
+  pub fn iter_tidbits(&self) -> impl Iterator<Item = (&String, &Post)> {
+    self.0.tidbits.iter()
   }
 
   pub fn feed_str(&self) -> &str { &self.0.feed_str }

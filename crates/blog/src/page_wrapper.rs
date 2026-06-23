@@ -77,6 +77,8 @@ pub(crate) fn page_wrapper(
             a href="/about" class="link" { "About" }
             "•"
             a href="/posts" class="link" { "Posts" }
+            "•"
+            a href="/tidbits" class="link" { "Tidbits" }
           }
           div class="markdown" {
             h1 class="title" { (page_title) }

@@ -11,6 +11,7 @@ mod posts;
 mod setup_tracing;
 mod signals;
 mod test_page;
+mod tidbit_page;
 
 use std::{env, net::SocketAddr};
 
@@ -108,6 +109,8 @@ fn router() -> Router<AppState> {
     .route("/about", get(self::about_page::about_page))
     .route("/posts", get(self::post_page::all_posts_page))
     .route("/posts/{slug}", get(self::post_page::post_page))
+    .route("/tidbits", get(self::tidbit_page::all_tidbits_page))
+    .route("/tidbits/{slug}", get(self::tidbit_page::tidbit_page))
     .route("/atom.xml", get(self::feed::feed_xml))
     .route("/test", get(self::test_page::test_page))
 }
