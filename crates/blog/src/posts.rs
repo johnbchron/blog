@@ -7,15 +7,18 @@ use crate::markdown::Markdown;
 
 #[derive(Debug, Clone)]
 pub(crate) struct Post {
-  pub(crate) title: Arc<str>,
-  pub(crate) date:  NaiveDate,
-  pub(crate) body:  Arc<str>,
+  pub(crate) title:  Arc<str>,
+  pub(crate) date:   NaiveDate,
+  pub(crate) hidden: bool,
+  pub(crate) body:   Arc<str>,
 }
 
 #[derive(Debug, Deserialize)]
 struct Frontmatter {
-  title: String,
-  date:  NaiveDate,
+  title:  String,
+  #[serde(default)]
+  hidden: bool,
+  date:   NaiveDate,
 }
 
 #[derive(Debug)]
@@ -54,9 +57,10 @@ impl Post {
     let html = Markdown::new(body).render_to_html();
 
     Ok(Post {
-      title: fm.title.into(),
-      date:  fm.date,
-      body:  html.into(),
+      title:  fm.title.into(),
+      date:   fm.date,
+      hidden: fm.hidden,
+      body:   html.into(),
     })
   }
 }

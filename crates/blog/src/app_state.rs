@@ -82,11 +82,11 @@ impl AppState {
   }
 
   pub fn iter_posts(&self) -> impl Iterator<Item = (&String, &Post)> {
-    self.0.posts.iter()
+    self.0.posts.iter().filter(|(_, p)| !p.hidden)
   }
 
   pub fn iter_tidbits(&self) -> impl Iterator<Item = (&String, &Post)> {
-    self.0.tidbits.iter()
+    self.0.tidbits.iter().filter(|(_, p)| !p.hidden)
   }
 
   pub fn feed_str(&self) -> &str { &self.0.feed_str }
