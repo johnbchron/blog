@@ -11,8 +11,12 @@ const BLOG_URI: &str = "https://blog.jlewis.sh/";
 const BLOG_ATOM_FEED_ABSOLUTE_URI: &str = "https://blog.jlewis.sh/atom.xml";
 const FAVICON_URI: &str = "https://blog.jlewis.sh/favicon.svg";
 
+fn post_uri(slug: impl AsRef<str>) -> String {
+  format!("{BLOG_URI}{slug}", slug = slug.as_ref())
+}
+
 // assigns everything to happen at 8 AM UTC.
-pub fn post_date_to_fixed_date_time(date: NaiveDate) -> FixedDateTime {
+fn post_date_to_fixed_date_time(date: NaiveDate) -> FixedDateTime {
   NaiveDateTime::new(date, NaiveTime::from_hms_opt(8, 0, 0).unwrap())
     .and_local_timezone(Utc)
     .unwrap()
@@ -40,7 +44,7 @@ where
 
   let entries = posts.into_iter().map(|(s, p)| Entry {
     title:        Text::plain(&*p.title),
-    id:           s.as_ref().to_string(),
+    id:           post_uri(s),
     updated:      post_date_to_fixed_date_time(p.date),
     authors:      vec![john_lewis_person.clone()],
     // TODO: populate categories
@@ -50,7 +54,7 @@ where
       href:      format!("{BLOG_URI}posts/{slug}", slug = s.as_ref()),
       hreflang:  None,
       rel:       "self".to_string(),
-      mime_type: Some("text/html".to_string()),
+      mime_type: None,
       length:    None,
       title:     Some(p.title.to_string()),
     }],
