@@ -60,7 +60,7 @@ impl AppState {
 
     let tidbits = load_posts(&tidbits_dir);
 
-    let feed = build_feed(posts.iter());
+    let feed = build_feed(posts.iter().filter(|(_, p)| !p.hidden));
 
     Ok(Self(Arc::new(InnerAppState {
       static_asset_dir,
