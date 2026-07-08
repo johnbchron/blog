@@ -45,6 +45,9 @@ pub(crate) fn page_wrapper(
         script src=(HTMX_ASSET_PATH) { }
         meta name="htmx-config" content=(HTXM_CONFIG);
 
+        // human.json
+        link rel="human-json" href="/human.json";
+
         // include columbo swap script
         script { (PreEscaped(columbo::GLOBAL_SCRIPT_CONTENTS)) }
 
