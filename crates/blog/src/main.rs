@@ -1,3 +1,5 @@
+#![feature(trim_prefix_suffix)]
+
 mod about_page;
 mod analytics;
 mod app_state;
@@ -108,9 +110,9 @@ fn router() -> Router<AppState> {
     .route("/", get(self::home_page::home_page))
     .route("/about", get(self::about_page::about_page))
     .route("/posts", get(self::post_page::all_posts_page))
-    .route("/posts/{slug}", get(self::post_page::post_page))
+    .route("/posts/{*slug}", get(self::post_page::post_page))
     .route("/tidbits", get(self::tidbit_page::all_tidbits_page))
-    .route("/tidbits/{slug}", get(self::tidbit_page::tidbit_page))
+    .route("/tidbits/{*slug}", get(self::tidbit_page::tidbit_page))
     .route("/atom.xml", get(self::feed::feed_xml))
     .route("/test", get(self::test_page::test_page))
 }

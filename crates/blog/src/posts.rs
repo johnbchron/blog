@@ -1,4 +1,8 @@
-use std::{collections::HashMap, path::PathBuf, sync::Arc};
+use std::{
+  collections::HashMap,
+  path::{Path, PathBuf},
+  sync::Arc,
+};
 
 use chrono::NaiveDate;
 use serde::Deserialize;
@@ -65,35 +69,56 @@ impl Post {
   }
 }
 
-pub(crate) fn load_posts(dir: &PathBuf) -> HashMap<String, Post> {
+pub(crate) fn load_posts(dir: &Path) -> HashMap<String, Post> {
   let mut posts = HashMap::new();
-  let Ok(entries) = std::fs::read_dir(dir) else {
+  let Ok(true) = std::fs::exists(dir) else {
     tracing::warn!("posts directory not found: {}", dir.display());
     return posts;
   };
 
-  for entry in entries.flatten() {
+  for entry in walkdir::WalkDir::new(dir) {
+    let entry = match entry {
+      Ok(entry) => entry,
+      Err(e) => {
+        tracing::warn!("failed to open entry: {e}");
+        continue;
+      }
+    };
     let path = entry.path();
-    if path.extension().is_some_and(|ext| ext == "md") {
-      let slug = path
-        .file_stem()
-        .unwrap_or_default()
-        .to_string_lossy()
-        .into_owned();
+    if path.extension().is_none_or(|ext| ext != "md") {
+      continue;
+    }
 
-      match std::fs::read_to_string(&path) {
-        Ok(content) => match Post::from_markdown(&content) {
-          Ok(post) => {
-            tracing::info!(slug, %post.date, "loaded post");
-            posts.insert(slug, post);
-          }
-          Err(e) => {
-            tracing::warn!("skipping {}: {e}", path.display());
-          }
-        },
-        Err(e) => {
-          tracing::warn!("skipping {}: read error: {e}", path.display());
+    let Ok(canon_path) = path.canonicalize() else {
+      tracing::warn!(
+        "skipping {}: failed to canonicalize path",
+        path.display()
+      );
+      continue;
+    };
+
+    let Ok(slug) = path.strip_prefix(dir) else {
+      tracing::warn!(
+        ?dir,
+        ?path,
+        "failed to strip directory from path, skipping"
+      );
+      continue;
+    };
+    let slug = slug.to_string_lossy().trim_suffix(".md").to_owned();
+
+    match std::fs::read_to_string(&canon_path) {
+      Ok(content) => match Post::from_markdown(&content) {
+        Ok(post) => {
+          tracing::info!(slug, %post.date, "loaded post");
+          posts.insert(slug, post);
         }
+        Err(e) => {
+          tracing::warn!("skipping {}: {e}", path.display());
+        }
+      },
+      Err(e) => {
+        tracing::warn!("skipping {}: read error: {e}", path.display());
       }
     }
   }
