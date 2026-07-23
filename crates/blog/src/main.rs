@@ -8,6 +8,7 @@ mod feed;
 mod home_page;
 mod markdown;
 mod page_wrapper;
+mod playground_page;
 mod post_page;
 mod posts;
 mod setup_tracing;
@@ -18,7 +19,10 @@ mod tidbit_page;
 use std::{env, net::SocketAddr};
 
 use axum::{
-  Router, ServiceExt, handler::Handler, response::IntoResponse, routing::get,
+  Router, ServiceExt,
+  handler::Handler,
+  response::IntoResponse,
+  routing::{get, post},
 };
 use maud::html;
 use miette::{Context, IntoDiagnostic};
@@ -115,6 +119,8 @@ fn router() -> Router<AppState> {
     .route("/tidbits/{*slug}", get(self::tidbit_page::tidbit_page))
     .route("/atom.xml", get(self::feed::feed_xml))
     .route("/test", get(self::test_page::test_page))
+    .route("/playground", get(self::playground_page::playground_page))
+    .route("/playground/render", post(self::playground_page::render))
 }
 
 fn determine_bind_address() -> String {
