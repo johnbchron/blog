@@ -29,7 +29,6 @@
         root = unfilteredRoot;
         fileset = lib.fileset.unions [
           (craneLib.fileset.commonCargoSources unfilteredRoot)
-          ./crates/blog/src/test_markup.html
           (lib.fileset.maybeMissing ./posts)
           (lib.fileset.maybeMissing ./tidbits)
           (lib.fileset.maybeMissing ./public)

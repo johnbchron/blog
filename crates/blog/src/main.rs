@@ -13,7 +13,6 @@ mod post_page;
 mod posts;
 mod setup_tracing;
 mod signals;
-mod test_page;
 mod tidbit_page;
 
 use std::{env, net::SocketAddr};
@@ -118,7 +117,6 @@ fn router() -> Router<AppState> {
     .route("/tidbits", get(self::tidbit_page::all_tidbits_page))
     .route("/tidbits/{*slug}", get(self::tidbit_page::tidbit_page))
     .route("/atom.xml", get(self::feed::feed_xml))
-    .route("/test", get(self::test_page::test_page))
     .route("/playground", get(self::playground_page::playground_page))
     .route("/playground/render", post(self::playground_page::render))
 }
