@@ -29,8 +29,7 @@
         root = unfilteredRoot;
         fileset = lib.fileset.unions [
           (craneLib.fileset.commonCargoSources unfilteredRoot)
-          (lib.fileset.maybeMissing ./posts)
-          (lib.fileset.maybeMissing ./tidbits)
+          (lib.fileset.maybeMissing ./content)
           (lib.fileset.maybeMissing ./public)
           (lib.fileset.maybeMissing ./style)
         ];
@@ -72,8 +71,7 @@
           cp target/release/${server-args.pname} $out/bin/${server-args.pname}
           cp ${css} $out/bin/styles.css
           cp -r public $out/bin/public
-          cp -r posts $out/bin/posts
-          cp -r tidbits $out/bin/tidbits
+          cp -r content $out/bin/content
 
           wrapProgram $out/bin/${server-args.pname} \
             --set-default STATIC_ASSET_DIR $out/bin/public \
