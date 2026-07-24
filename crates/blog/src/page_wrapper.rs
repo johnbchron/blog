@@ -4,7 +4,7 @@ use maud::{Markup, PreEscaped, html};
 use crate::ctx::Ctx;
 
 const PRELOAD_FONT_PATHS: &[&str] = &[];
-const FAVICON_SVG: &str = include_str!("../../../public/favicon.svg");
+const FAVICON_SVG: &str = include_str!("../../../assets/favicon.svg");
 const FAVICON_SVG_BASE64: &str =
   const_base::encode_as_str!(FAVICON_SVG, const_base::Config::B64);
 const FAVICON_SVG_HREF: &str =

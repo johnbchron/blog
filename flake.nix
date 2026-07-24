@@ -30,7 +30,7 @@
         fileset = lib.fileset.unions [
           (craneLib.fileset.commonCargoSources unfilteredRoot)
           (lib.fileset.maybeMissing ./content)
-          (lib.fileset.maybeMissing ./public)
+          (lib.fileset.maybeMissing ./assets)
           (lib.fileset.maybeMissing ./style)
         ];
       };
@@ -70,7 +70,7 @@
           mkdir -p $out/bin
           cp target/release/${server-args.pname} $out/bin/${server-args.pname}
           cp ${css} $out/bin/styles.css
-          cp -r public $out/bin/public
+          cp -r assets $out/bin/assets
           cp -r content $out/bin/content
 
           wrapProgram $out/bin/${server-args.pname} \
