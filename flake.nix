@@ -29,9 +29,10 @@
         root = unfilteredRoot;
         fileset = lib.fileset.unions [
           (craneLib.fileset.commonCargoSources unfilteredRoot)
-          (lib.fileset.maybeMissing ./content)
-          (lib.fileset.maybeMissing ./assets)
+          # css drv is built with this src
           (lib.fileset.maybeMissing ./style)
+          # gets byte-included into binary
+          (lib.fileset.maybeMissing ./assets/favicon.svg)
         ];
       };
 
@@ -48,6 +49,7 @@
       css = pkgs.stdenv.mkDerivation {
         pname = "grid-css";
         version = "0.1.0";
+        # has to be built with package src bc it needs the rust source for classes
         inherit src;
 
         buildPhase = ''
@@ -58,28 +60,39 @@
         '';
       };
       
-      server = craneLib.buildPackage (server-args // {
+      server-binary = craneLib.buildPackage (server-args // {
+        pname = server-args.pname + "-binary";
         cargoArtifacts = craneLib.buildDepsOnly server-args;
+      });
 
-        nativeBuildInputs = (server-args.nativeBuildInputs or [ ]) ++ (with pkgs; [
+      server = pkgs.stdenv.mkDerivation {
+        inherit (server-args) pname version;
+        src = server-binary;
+        
+        nativeBuildInputs = (with pkgs; [
           makeWrapper
         ]);
 
-        doNotPostBuildInstallCargoBinaries = true;
-        installPhaseCommand = ''
-          mkdir -p $out/bin
-          cp target/release/${server-args.pname} $out/bin/${server-args.pname}
-          cp ${css} $out/bin/styles.css
-          cp -r assets $out/bin/assets
-          cp -r content $out/bin/content
+        buildPhase = "";
+        installPhase = ''
+          mkdir $out
 
+          # copy everything from the drv src, which is the binary
+          cp -r * $out
+          # copy css from the css drv
+          cp ${css} $out/bin/styles.css
+          # copy assets and content from the *original src*
+          cp -r ${./assets} $out/bin/assets
+          cp -r ${./content} $out/bin/content
+
+          # wrap with default env vars
           wrapProgram $out/bin/${server-args.pname} \
-            --set-default STATIC_ASSET_DIR $out/bin/public \
-            --set-default POSTS_DIR $out/bin/posts \
-            --set-default TIDBITS_DIR $out/bin/tidbits \
+            --set-default STATIC_ASSET_DIR $out/bin/assets \
+            --set-default POSTS_DIR $out/bin/content/posts \
+            --set-default TIDBITS_DIR $out/bin/content/tidbits \
             --set-default STYLESHEET_PATH $out/bin/styles.css \
         '';
-      });
+      };
 
       server-container = pkgs.dockerTools.buildLayeredImage {
         name = server-args.pname;
@@ -118,7 +131,7 @@
         then darwinDevShell
         else linuxDevShell;
       packages = {
-        inherit server server-container;
+        inherit server server-binary server-container;
         default = server;
       };
     });
