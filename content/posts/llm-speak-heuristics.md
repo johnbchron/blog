@@ -24,7 +24,7 @@ evaluate and call these out on pages I visit.
 
 ---
 
-- The sentence "the pattern is clear: `conclusion`", especially if `conclusion`
+- The sentence "the {pattern,shape} is clear: `conclusion`", especially if `conclusion`
 is **bolded**. Variations include "the pattern is everywhere", "here's the
 pattern: `conclusion`", etc.
   > The pattern is clear: **this prose is slop**.
@@ -41,5 +41,8 @@ have not caught up. [\[ref\]][1]
   > Why You've Never Fixed It
 
   > Where It Happens
+- "the part that actually mattered"
+  > Objects fell out of fashion for good reasons, but we threw away the part
+that actually mattered.
 
 [1]: (https://www.abgeo.dev/blog/cli-authentication-the-right-way/)
