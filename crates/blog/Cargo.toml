@@ -17,6 +17,7 @@ futures.workspace = true
 http-body-util.workspace = true
 maud.workspace = true
 miette.workspace = true
+nanorand.workspace = true
 pulldown-cmark.workspace = true
 serde.workspace = true
 sqlx.workspace = true

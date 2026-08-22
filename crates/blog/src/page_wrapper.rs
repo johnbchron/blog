@@ -10,7 +10,11 @@ const FAVICON_SVG_BASE64: &str =
 const FAVICON_SVG_HREF: &str =
   const_format::concatcp!("data:image/svg+xml;base64,", FAVICON_SVG_BASE64);
 const HTMX_ASSET_PATH: &str = "/dist/htmx.min.js";
-const HTXM_CONFIG: &str = r#"{ "globalViewTransitions": true }"#;
+// `includeIndicatorStyles: false` stops htmx from injecting an inline
+// `<style>` element (for `.htmx-indicator`) at load, which our CSP would
+// otherwise block.
+const HTXM_CONFIG: &str =
+  r#"{ "globalViewTransitions": true, "includeIndicatorStyles": false }"#;
 
 pub(crate) fn page_wrapper(
   page_title: impl AsRef<str>,
@@ -20,6 +24,7 @@ pub(crate) fn page_wrapper(
   const HEAD_TITLE_PREFIX: &str = "John Lewis";
 
   let stylesheet = ctx.state().stylesheet();
+  let nonce = ctx.nonce();
 
   let preload_fonts = PRELOAD_FONT_PATHS.iter().map(|p| html! {
     link rel="preload" href=(p) as="font" type="font/woff2" crossorigin="anonymous";
@@ -49,7 +54,7 @@ pub(crate) fn page_wrapper(
         link rel="human-json" href="/human.json";
 
         // include columbo swap script
-        script { (PreEscaped(columbo::GLOBAL_SCRIPT_CONTENTS)) }
+        script nonce=(nonce) { (PreEscaped(columbo::GLOBAL_SCRIPT_CONTENTS)) }
 
         // preload fonts
         @for preload_font in preload_fonts {
@@ -57,7 +62,7 @@ pub(crate) fn page_wrapper(
         }
 
         // main stylesheet
-        style { (PreEscaped(stylesheet)) }
+        style nonce=(nonce) { (PreEscaped(stylesheet)) }
 
         // arborium highlighting
         link rel="stylesheet" href="/dist/base-arborium.css";
@@ -65,7 +70,7 @@ pub(crate) fn page_wrapper(
         link rel="stylesheet" href="/dist/cattpuccin-latte.css";
 
         // font stylesheets
-        style { (PreEscaped(include_css!("../../style/fonts/ibm_plex_serif.css"))) }
+        style nonce=(nonce) { (PreEscaped(include_css!("../../style/fonts/ibm_plex_serif.css"))) }
 
         title { (head_title) }
 

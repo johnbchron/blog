@@ -3,6 +3,7 @@
 mod about_page;
 mod analytics;
 mod app_state;
+mod csp;
 mod ctx;
 mod feed;
 mod home_page;
@@ -71,6 +72,8 @@ async fn main() -> miette::Result<()> {
     .map_response_body(axum::body::Body::new)
     // tracing
     .layer(TraceLayer::new_for_http())
+    // content security policy (mints per-request nonce, sets header)
+    .layer(axum::middleware::from_fn(self::csp::apply_csp))
     // normalize paths and routing
     .layer(NormalizePathLayer::trim_trailing_slash())
     .layer(CompressionLayer::new())
