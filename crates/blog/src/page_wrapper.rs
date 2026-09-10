@@ -43,23 +43,14 @@ pub(crate) fn page_wrapper(
       head {
         meta charset="utf-8";
         meta name="viewport" content="width=device-width, initial-scale=1";
-        meta name="title" content=(head_title);
-        meta name="description" content=(crate::home_page::SITE_DESCRIPTION);
 
-        // load htmx
-        script src=(HTMX_ASSET_PATH) { }
-        meta name="htmx-config" content=(HTXM_CONFIG);
-
-        // human.json
-        link rel="human-json" href="/human.json";
+        title { (head_title) }
 
         // include columbo swap script
         script nonce=(nonce) { (PreEscaped(columbo::GLOBAL_SCRIPT_CONTENTS)) }
 
-        // preload fonts
-        @for preload_font in preload_fonts {
-          (preload_font)
-        }
+        // load htmx
+        script src=(HTMX_ASSET_PATH) { }
 
         // main stylesheet
         style nonce=(nonce) { (PreEscaped(stylesheet)) }
@@ -72,10 +63,21 @@ pub(crate) fn page_wrapper(
         // font stylesheets
         style nonce=(nonce) { (PreEscaped(include_css!("../../style/fonts/ibm_plex_serif.css"))) }
 
-        title { (head_title) }
+        // preload fonts
+        @for preload_font in preload_fonts {
+          (preload_font)
+        }
+
+        // meta
+        meta name="title" content=(head_title);
+        meta name="description" content=(crate::home_page::SITE_DESCRIPTION);
+        meta name="htmx-config" content=(HTXM_CONFIG);
 
         // icon
         link rel="icon" type="image/svg+xml" href=(FAVICON_SVG_HREF);
+
+        // human.json
+        link rel="human-json" href="/human.json";
       }
       body class="bg-light-bg-1 dark:bg-dark-bg-1 text-light-fg dark:text-dark-fg font-serif" {
         main class="p-4 sm:container sm:mx-auto flex flex-col gap-4 min-h-svh" {
