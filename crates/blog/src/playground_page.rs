@@ -29,7 +29,7 @@ pub(crate) async fn playground_page(
     }
     p class="text-light-fg-dim dark:text-dark-fg-dim" {
       "I created this because I put a lot of energy into tuning the way this \
-      blog renders markdown, and thus it is now my favorit markdown renderer."
+      blog renders markdown, and thus it is now my favorite markdown renderer."
     }
 
     textarea
