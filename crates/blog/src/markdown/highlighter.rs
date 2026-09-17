@@ -34,19 +34,27 @@ impl Highlighter {
           }
         }
         ev @ Event::End(TagEnd::CodeBlock) => match code_buf.take() {
-          Some((lang, code)) => {
-            let highlighted = highlighter
-              .highlight(&lang, &code)
-              .into_diagnostic()
-              .with_context(|| {
+          Some((lang, code)) => match highlighter.highlight(&lang, &code) {
+            Ok(highlighted) => {
+              output_events.push(Event::Start(Tag::CodeBlock(
+                CodeBlockKind::Fenced(lang.into()),
+              )));
+              output_events.push(Event::Html(highlighted.into()));
+              output_events.push(Event::End(TagEnd::CodeBlock));
+            }
+            Err(arborium::Error::UnsupportedLanguage { .. }) => {
+              output_events.push(Event::Start(Tag::CodeBlock(
+                CodeBlockKind::Fenced(lang.into()),
+              )));
+              output_events.push(Event::Text(code.into()));
+              output_events.push(Event::End(TagEnd::CodeBlock));
+            }
+            Err(err) => {
+              return Err(err).into_diagnostic().with_context(|| {
                 format!("failed to highlight code with declared lang `{lang}`")
-              })?;
-            output_events.push(Event::Start(Tag::CodeBlock(
-              CodeBlockKind::Fenced(lang.into()),
-            )));
-            output_events.push(Event::Html(highlighted.into()));
-            output_events.push(Event::End(TagEnd::CodeBlock));
-          }
+              });
+            }
+          },
           None => {
             output_events.push(ev);
           }
