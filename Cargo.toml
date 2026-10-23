@@ -7,7 +7,20 @@ edition = "2024"
 version = "0.1.0"
 
 [workspace.dependencies]
-arborium = { version = "2.16.0", features = [ "all-languages" ] }
+arborium = { version = "2.16.0", features = [
+  "lang-bash",
+  "lang-css",
+  "lang-html",
+  "lang-javascript",
+  "lang-json",
+  "lang-markdown",
+  "lang-rust",
+  "lang-sql",
+  "lang-toml",
+  "lang-typescript",
+  "lang-typst",
+  "lang-yaml",
+] }
 atom_syndication = "0.12"
 axum = { version = "0.8", features = [ "http2", "macros" ] }
 chrono = { version = "0.4", features = [ "serde" ] }
